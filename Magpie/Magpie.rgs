@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'Magpie'
+		'Magpie.DLL'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}
