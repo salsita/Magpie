@@ -222,6 +222,7 @@ HRESULT CMagpieApplication::RunModule(
   LPCOLESTR                   lpszModuleID,
   CMagpieModuleComObject  **  ppRet)
 {
+  ATLTRACE(_T("CMagpieApplication::RunModule %s\n"), lpszModuleID);
   // load the module
   CComPtr<CMagpieModuleComObject> module;
   IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, NULL, module.p));
@@ -376,6 +377,14 @@ STDMETHODIMP CMagpieApplication::GetModuleObject(const OLECHAR* lpszModuleID, IM
     return E_FAIL;
   }
   return module.QueryInterface(ppRet);
+}
+
+//----------------------------------------------------------------------------
+//  AddNamedItem
+STDMETHODIMP CMagpieApplication::AddNamedItem(const OLECHAR* lpszName, IDispatch * pDisp, ULONG ulFlags)
+{
+  return m_ScriptEngine.AddNamedItem(
+    lpszName, pDisp, ulFlags);
 }
 
 //----------------------------------------------------------------------------

@@ -108,8 +108,8 @@ HRESULT CMagpieActiveScript::AddNamedItem(
   {
     return S_FALSE;
   }
-  IF_FAILED_RET(m_ScriptEngine->AddNamedItem(pstrName, dwFlags));
   m_NamedItems[pstrName] = pDisp;
+  IF_FAILED_RET(m_ScriptEngine->AddNamedItem(pstrName, dwFlags));
   return S_OK;
 }
 

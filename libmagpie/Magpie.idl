@@ -86,6 +86,11 @@ interface IMagpieApplication : IUnknown
   HRESULT GetModuleObject([in, string] const OLECHAR* lpszModuleID, [out, retval] IMagpieModuleRestricted ** ppRet);
 
   [helpstring(
+    "TODO."
+  )]
+  HRESULT AddNamedItem([in, string] const OLECHAR* lpszName, [in] IDispatch * pDisp, [in] ULONG ulFlags);
+
+  [helpstring(
     "Shutdown-method. Call to stop the script engine and cleanup everything."
   )]
   HRESULT Shutdown();

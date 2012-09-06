@@ -120,6 +120,7 @@ public:
   STDMETHOD(RunScript)(const OLECHAR* lpszModuleID, const OLECHAR* lpszScript);
   STDMETHOD(AddExtension)(const OLECHAR* lpszExtensionName, IDispatch* pDispExtension);
   STDMETHOD(GetModuleObject)(const OLECHAR* lpszModuleID, IMagpieModuleRestricted ** ppRet);
+  STDMETHOD(AddNamedItem)(const OLECHAR* lpszName, IDispatch * pDisp, ULONG ulFlags);
   STDMETHOD(Shutdown)();
 
 private:
