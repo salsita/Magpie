@@ -28,8 +28,9 @@ interface IMagpieApplication : IUnknown
 {
   [helpstring(
     "Init-method. Must be called first to initialize everything."
+    "lpszAppName is the name that appears in the debugger for this instance."
   )]
-  HRESULT Init();
+  HRESULT Init([in, string] const OLECHAR* lpszAppName);
 
   [helpstring(
     "AddScriptLoader. Adds a script source."

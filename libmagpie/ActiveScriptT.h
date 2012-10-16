@@ -116,9 +116,17 @@ public:
       return E_UNEXPECTED;
     }
 
+    DWORD_PTR dwSourceContext = 0;
+    __if_exists(Timpl::AddScriptForDebug)
+    {
+      // add script to debugging support
+      Timpl* pImpl = (Timpl*)this;
+      IF_FAILED_RET(pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, dwSourceContext));
+    }
+
     // parse script text
 	  IF_FAILED_RET(m_ScriptEngineParser->ParseScriptText(
-      lpszSource, lpszModuleName, 0, 0, 0, 0, SCRIPTTEXT_ISPERSISTENT, 0, 0));
+      lpszSource, lpszModuleName, 0, 0, dwSourceContext, 0, SCRIPTTEXT_HOSTMANAGESSOURCE|SCRIPTTEXT_ISVISIBLE, 0, 0));
     return S_OK;
   }
 
