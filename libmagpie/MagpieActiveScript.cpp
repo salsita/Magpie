@@ -24,7 +24,9 @@ CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
 //  Init
 HRESULT CMagpieActiveScript::Init(LPCOLESTR appId)
 {
+#ifdef SCRIPTDEBUG_
   IF_FAILED_RET(InitializeDebugInterface(appId));
+#endif
   IF_FAILED_RET(LoadScriptEngine(CLSID_JScript));
   IF_FAILED_RET(m_ScriptEngine->SetScriptState(SCRIPTSTATE_INITIALIZED));
   return S_OK;
@@ -35,17 +37,11 @@ HRESULT CMagpieActiveScript::Init(LPCOLESTR appId)
 HRESULT CMagpieActiveScript::Shutdown()
 {
   UnloadScriptEngine();
+#ifdef SCRIPTDEBUG_
   UninitializeDebugInterface();
+#endif
   m_NamedItems.RemoveAll();
   return S_OK;
-}
-
-
-STDMETHODIMP AsdasdInvoke(IDispatch * pDisp, DISPID dispIdMember, REFIID riid, LCID lcid, 
-  WORD wFlags,   DISPPARAMS FAR* pDispParams,   VARIANT FAR* pVarResult, 
-  EXCEPINFO FAR* pExcepInfo,   unsigned int FAR* puArgErr )
-{
-  return E_FAIL;
 }
 
 //----------------------------------------------------------------------------
@@ -82,7 +78,6 @@ HRESULT CMagpieActiveScript::RunModule(
   // now run the module
   m_Application.EnterModule(sModuleID);
   HRESULT hr = E_FAIL;
-//  hr = CActiveScriptDebugT::AddScriptFile(m_ScriptEngine, sFilename, sModuleID, lpszSource, sourceContext);
   hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID);
   if (SUCCEEDED(hr))
   {
