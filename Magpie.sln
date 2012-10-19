@@ -8,11 +8,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Magpie", "Magpie\Magpie.vcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmagpie", "libmagpie\libmagpie.vcproj", "{B3C4AA4F-C452-45D4-B4EC-DF670F777F55}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MagpieTest", "..\MagpieTest\MagpieTest.vcproj", "{0BADF165-76CA-4DB5-B77D-8DFA26BB0CEF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E2EDE153-1F28-4B43-85F6-BFE85D626A28} = {E2EDE153-1F28-4B43-85F6-BFE85D626A28}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -27,10 +22,6 @@ Global
 		{B3C4AA4F-C452-45D4-B4EC-DF670F777F55}.Debug|Win32.Build.0 = Debug|Win32
 		{B3C4AA4F-C452-45D4-B4EC-DF670F777F55}.Release|Win32.ActiveCfg = Release|Win32
 		{B3C4AA4F-C452-45D4-B4EC-DF670F777F55}.Release|Win32.Build.0 = Release|Win32
-		{0BADF165-76CA-4DB5-B77D-8DFA26BB0CEF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0BADF165-76CA-4DB5-B77D-8DFA26BB0CEF}.Debug|Win32.Build.0 = Debug|Win32
-		{0BADF165-76CA-4DB5-B77D-8DFA26BB0CEF}.Release|Win32.ActiveCfg = Release|Win32
-		{0BADF165-76CA-4DB5-B77D-8DFA26BB0CEF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
