@@ -116,13 +116,15 @@ library MagpieLib
     ),
 	  uuid(C1425F75-242A-47db-AAC1-97ED8CF88AD9)
   ]
+  // !IMPORTANT!: These values have to match the accroding dispatch IDs in
+  // _IMagpieLoggerEvents and IMagpieConsole
   enum LogFacility
   {
-    LT_LOG,
-    LT_DEBUG,
-    LT_INFO,
-    LT_WARN,
-    LT_ERROR
+    LT_LOG    = 1,
+    LT_DEBUG  = 2,
+    LT_INFO   = 3,
+    LT_WARN   = 4,
+    LT_ERROR  = 5
   };
 
 /*==========================================================================*/
@@ -140,27 +142,27 @@ library MagpieLib
     [id(1), helpstring(
       "Method OnLog"
     )]
-    void OnLog([in] VARIANT val, [in] BSTR bsModuleID);
+    void OnLog([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
 
     [id(2), helpstring(
       "Method OnDebug"
     )]
-    void OnDebug([in] VARIANT val, [in] BSTR bsModuleID);
+    void OnDebug([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
 
     [id(3), helpstring(
       "Method OnInfo"
     )]
-    void OnInfo([in] VARIANT val, [in] BSTR bsModuleID);
+    void OnInfo([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
 
     [id(4), helpstring(
       "Method OnWarn"
     )]
-    void OnWarn([in] VARIANT val, [in] BSTR bsModuleID);
+    void OnWarn([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
 
     [id(5), helpstring(
       "Method OnError"
     )]
-    void OnError([in] VARIANT val, [in] BSTR bsModuleID);
+    void OnError([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
   };
 
 /*==========================================================================*/
@@ -178,28 +180,28 @@ library MagpieLib
   {
     [id(1), helpstring(
       "Method log"
-    )]
-    HRESULT log([in] VARIANT val);
+    ), vararg]
+    HRESULT log([in] SAFEARRAY(VARIANT) pVals);
 
     [id(2), helpstring(
       "Method debug"
-    )]
-    HRESULT debug([in] VARIANT val);
+    ), vararg]
+    HRESULT debug([in] SAFEARRAY(VARIANT) pVals);
 
     [id(3), helpstring(
       "Method info"
-    )]
-    HRESULT info([in] VARIANT val);
+    ), vararg]
+    HRESULT info([in] SAFEARRAY(VARIANT) pVals);
 
     [id(4), helpstring(
       "Method warn"
-    )]
-    HRESULT warn([in] VARIANT val);
+    ), vararg]
+    HRESULT warn([in] SAFEARRAY(VARIANT) pVals);
 
     [id(5), helpstring(
       "Method error"
-    )]
-    HRESULT error([in] VARIANT val);
+    ), vararg]
+    HRESULT error([in] SAFEARRAY(VARIANT) pVals);
   };
 
   /*==========================================================================*/

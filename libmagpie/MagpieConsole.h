@@ -74,11 +74,11 @@ public:
 public:
   // -------------------------------------------------------------------------
   // IMagpieConsole methods. See .idl for description.
-  STDMETHOD(log)(VARIANT val);
-  STDMETHOD(debug)(VARIANT val);
-  STDMETHOD(info)(VARIANT val);
-  STDMETHOD(warn)(VARIANT val);
-  STDMETHOD(error)(VARIANT val);
+  STDMETHOD(log)(SAFEARRAY* pVals);
+  STDMETHOD(debug)(SAFEARRAY* pVals);
+  STDMETHOD(info)(SAFEARRAY* pVals);
+  STDMETHOD(warn)(SAFEARRAY* pVals);
+  STDMETHOD(error)(SAFEARRAY* pVals);
 
 private:
   // -------------------------------------------------------------------------

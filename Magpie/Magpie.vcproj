@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				RegisterOutput="false"
+				RegisterOutput="true"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="libbhohelper.lib libmagpie.lib"
 				LinkIncremental="2"
