@@ -180,32 +180,33 @@ HRESULT CMagpieApplication::LoadModule(
     return S_FALSE;  // means: already loaded
   }
 
-  CComBSTR bsScriptSource;
+  // the selected script loader. can be NULL.
+  CComPtr<IMagpieScriptLoader> scriptLoader;
+
   if (lpszModuleSource)
   {
-    // the script source came in lpszModuleSource
-    bsScriptSource = lpszModuleSource;
     hr = S_OK;
   }
   else
   {
-    // ask script loaders for the module's source
+    // find a script loader
     size_t loaderCount = m_ScriptLoaders.GetCount();
     for(size_t n = 0; n < loaderCount; n++)
     {
-      hr = m_ScriptLoaders[n]->GetModuleScript(lpszModuleID, &bsScriptSource);
-      if (SUCCEEDED(hr))
+      hr = m_ScriptLoaders[n]->HasModuleScript(lpszModuleID);
+      if (S_OK == hr)
       {
+        scriptLoader = m_ScriptLoaders[n];
         break;
       }
     }
   }
-  if (SUCCEEDED(hr))
+  // need either scriptLoader or lpszModuleSource
+  if (scriptLoader || lpszModuleSource)
   {
-    // WATCH IT! The created object takes ownership of bsScriptSource!
     CMagpieModuleComObject * pModuleObject;
     IF_FAILED_RET(CMagpieModule::CreateObject(
-      *this, sModuleID, bsScriptSource, pModuleObject));
+      *this, sModuleID, scriptLoader, lpszModuleSource, pModuleObject));
 
     m_Modules[sModuleID] = pModuleObject;
     pRet = pModuleObject;

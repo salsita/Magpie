@@ -18,7 +18,8 @@
 HRESULT CMagpieModule::CreateObject(
   CMagpieApplication       &  application,
   LPCOLESTR                   lpsModuleID,
-  CComBSTR                 &  bsScriptSource,
+  IMagpieScriptLoader      *  pScriptLoader,
+  LPCOLESTR                   lpszScriptSource,
   CMagpieModuleComObject  *&  pRet)
 {
   CMagpieModuleComObject *newObject = pRet = NULL;
@@ -26,7 +27,7 @@ HRESULT CMagpieModule::CreateObject(
   newObject->AddRef();
 
   HRESULT hr = E_FAIL;
-  hr = newObject->Init(application, lpsModuleID, bsScriptSource);
+  hr = newObject->Init(application, lpsModuleID, pScriptLoader, lpszScriptSource);
   if(FAILED(hr))
   {
     newObject->Release();
@@ -41,7 +42,8 @@ HRESULT CMagpieModule::CreateObject(
 //  CTOR
 CMagpieModule::CMagpieModule() :
   m_pApplication(NULL),
-  m_bDidRun(FALSE)
+  m_bDidRun(FALSE),
+  m_dwScriptContext(0)
 {
 }
 
@@ -65,11 +67,36 @@ void CMagpieModule::FinalRelease()
 HRESULT CMagpieModule::Init(
   CMagpieApplication  & application,
   LPCOLESTR             lpsModuleID,
-  CComBSTR            & bsScriptSource)
+  IMagpieScriptLoader * pScriptLoader,
+  LPCOLESTR             lpszScriptSource)
 {
+  ATLASSERT(pScriptLoader || lpszScriptSource);
   m_pApplication = &application;
   m_sID = lpsModuleID;
-  m_bsScriptSource.Attach(bsScriptSource.Detach());
+  if (lpszScriptSource)
+  {
+    m_bsScriptSource = lpszScriptSource;
+  }
+  else if(pScriptLoader)
+  {
+    IF_FAILED_RET(pScriptLoader->GetModuleScript(lpsModuleID, &m_bsScriptSource));
+  // get additional data from script loader
+    CComQIPtr<IMagpieScriptLoader2> loader2(pScriptLoader);
+    if (loader2)
+    {
+      CComBSTR bsFileName;
+      // We use a relative name here as a long name for the debugger. If we would
+      // use the real filename JIT would understand this and open the actual file.
+      // But in this case we would not be able to add scripts freely executed in
+      // this module to appear in the debugger as part of the module script.
+      // Sometime in the future someone might find a solution for this, then we should
+      // use the real filepath.
+      if (SUCCEEDED(loader2->GetProperty(lpsModuleID, L"relname", &bsFileName)))
+      {
+        m_sFilename = bsFileName;
+      }
+    }
+  }
 
   // create "require" object
   IF_FAILED_RET(CMagpieRequire::CreateObject(*this, m_Require.p));
