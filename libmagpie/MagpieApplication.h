@@ -112,7 +112,7 @@ public:
 public:
   // -------------------------------------------------------------------------
   // IMagpieApplication methods. See .idl for description.
-  STDMETHOD(Init)();
+  STDMETHOD(Init)(const OLECHAR* lpszAppName);
   STDMETHOD(AddScriptLoader)(IMagpieScriptLoader * pLoader);
   STDMETHOD(AddFilesystemScriptLoader)(const OLECHAR* lpszRootPath);
   STDMETHOD(AddResourceScriptLoader)(HANDLE_PTR hModule);

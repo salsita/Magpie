@@ -29,7 +29,7 @@ HRESULT CMagpieApplication::FinalConstruct()
 {
   // prepare the aggregated pointer
   m_Console.QueryInterface(IID_IUnknown, (void**)&m_ConsolePtr);
-  return Init();
+  return Init(L"Magpie");
 }
 
 //----------------------------------------------------------------------------
@@ -278,14 +278,14 @@ void CMagpieApplication::ExitModule()
 
 //----------------------------------------------------------------------------
 //  Init
-STDMETHODIMP CMagpieApplication::Init()
+STDMETHODIMP CMagpieApplication::Init(const OLECHAR* lpszAppName)
 {
   // shutdown if running
   Shutdown();
 
   // init script engine
   // TODO: generate an appID somehow
-  HRESULT hr = m_ScriptEngine.Init(_T("Magpie"));
+  HRESULT hr = m_ScriptEngine.Init(lpszAppName);
   IF_FAILED_RET(hr);
 
   // prepare CommonJS objects
