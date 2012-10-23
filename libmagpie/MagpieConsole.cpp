@@ -74,49 +74,49 @@ void CMagpieConsole::FinalRelease()
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-// IMagpieApplication implementation
+// IMagpieConsole implementation
 
 //----------------------------------------------------------------------------
 //  log
 STDMETHODIMP CMagpieConsole::log(
-  VARIANT val)
+  SAFEARRAY* pVals)
 {
-  Fire_OnLog(val, m_sCurrentModuleID);
+  Fire_ConsoleEvent(LT_LOG, m_sCurrentModuleID, pVals);
   return S_OK;
 }
 
 //----------------------------------------------------------------------------
 //  debug
 STDMETHODIMP CMagpieConsole::debug(
-  VARIANT val)
+  SAFEARRAY* pVals)
 {
-  Fire_OnDebug(val, m_sCurrentModuleID);
+  Fire_ConsoleEvent(LT_DEBUG, m_sCurrentModuleID, pVals);
   return S_OK;
 }
 
 //----------------------------------------------------------------------------
 //  info
 STDMETHODIMP CMagpieConsole::info(
-  VARIANT val)
+  SAFEARRAY* pVals)
 {
-  Fire_OnInfo(val, m_sCurrentModuleID);
+  Fire_ConsoleEvent(LT_INFO, m_sCurrentModuleID, pVals);
   return S_OK;
 }
 
 //----------------------------------------------------------------------------
 //  warn
 STDMETHODIMP CMagpieConsole::warn(
-  VARIANT val)
+  SAFEARRAY* pVals)
 {
-  Fire_OnWarn(val, m_sCurrentModuleID);
+  Fire_ConsoleEvent(LT_WARN, m_sCurrentModuleID, pVals);
   return S_OK;
 }
 
 //----------------------------------------------------------------------------
 //  error
 STDMETHODIMP CMagpieConsole::error(
-  VARIANT val)
+  SAFEARRAY* pVals)
 {
-  Fire_OnError(val, m_sCurrentModuleID);
+  Fire_ConsoleEvent(LT_ERROR, m_sCurrentModuleID, pVals);
   return S_OK;
 }
