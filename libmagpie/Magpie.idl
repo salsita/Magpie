@@ -116,7 +116,7 @@ library MagpieLib
     ),
 	  uuid(C1425F75-242A-47db-AAC1-97ED8CF88AD9)
   ]
-  // !IMPORTANT!: These values have to match the accroding dispatch IDs in
+  // !IMPORTANT!: These values have to match the corresponding dispatch IDs in
   // _IMagpieLoggerEvents and IMagpieConsole
   enum LogFacility
   {

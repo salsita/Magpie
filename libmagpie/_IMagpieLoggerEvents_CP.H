@@ -11,7 +11,7 @@ class CProxy_IMagpieLoggerEvents :
 	public IConnectionPointImpl<T, &__uuidof(_IMagpieLoggerEvents)>
 {
 public:
-  // NOTE: LogFacility maps directly to the dispatch ID of the according event!
+  // NOTE: LogFacility maps directly to the dispatch ID of the corresponding event!
 	HRESULT Fire_ConsoleEvent(LogFacility fac, BSTR bsModuleID, SAFEARRAY* pVals)
 	{
     if (!pVals->cbElements)
@@ -44,34 +44,5 @@ public:
 		}
 		return hr;
 	}
-/*
-  // prototype for a log function - old style
-  HRESULT Fire_OnLog( VARIANT val,  BSTR bsModuleID)
-	{
-		HRESULT hr = S_OK;
-		T * pThis = static_cast<T *>(this);
-		int cConnections = m_vec.GetSize();
-
-		for (int iConnection = 0; iConnection < cConnections; iConnection++)
-		{
-			pThis->Lock();
-			CComPtr<IUnknown> punkConnection = m_vec.GetAt(iConnection);
-			pThis->Unlock();
-
-			IDispatch * pConnection = static_cast<IDispatch *>(punkConnection.p);
-
-			if (pConnection)
-			{
-				CComVariant avarParams[2];
-				avarParams[1] = val;
-				avarParams[0] = bsModuleID;
-				avarParams[0].vt = VT_BSTR;
-				DISPPARAMS params = { avarParams, NULL, 2, 0 };
-				hr = pConnection->Invoke(1, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &params, NULL, NULL, NULL);
-			}
-		}
-		return hr;
-	}
-*/
 };
 
