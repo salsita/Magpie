@@ -59,12 +59,14 @@ public:
 public:
   // -------------------------------------------------------------------------
   // IMagpieScriptLoader methods. See .idl for description.
+  STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
   STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
 
 private:
   // -------------------------------------------------------------------------
   // Private methods.
 
+	HRESULT ResolveModuleID(LPCOLESTR lpszModuleID, CString * psRet = NULL);
 	HRESULT Init(HMODULE hModule);
 
 private:

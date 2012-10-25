@@ -59,7 +59,7 @@ HRESULT CMagpieActiveScript::RunModule(
 
   CString sFilename, sModuleID;
   pModule->GetID(sModuleID);
-//  pModule->GetFilename(sFilename);
+  pModule->GetFilename(sFilename);
 
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
 
@@ -78,9 +78,14 @@ HRESULT CMagpieActiveScript::RunModule(
   // now run the module
   m_Application.EnterModule(sModuleID);
   HRESULT hr = E_FAIL;
-  hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID);
+  DWORD_PTR dwSourceContext = 0;
+  // Note that the parent debug context is 0. Modules are in the debugger shown
+  // at top level.
+  hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID, sFilename, &dwSourceContext);
   if (SUCCEEDED(hr))
   {
+    // set module's source context
+    pModule->SetSourceContext(dwSourceContext);
     m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
   }
   m_Application.ExitModule();

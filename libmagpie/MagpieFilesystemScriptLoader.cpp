@@ -55,6 +55,32 @@ void CMagpieFilesystemScriptLoader::FinalRelease()
   int asd = 0;
 }
 
+HRESULT CMagpieFilesystemScriptLoader::ResolveModuleID(LPCOLESTR lpszModuleID, CString * psRet)
+{
+  // create a real path from the module ID...
+  CString sModulePath, sModuleIDPath(lpszModuleID);
+  sModuleIDPath.Replace(_T('/'), _T('\\'));
+  sModulePath = m_sRootPath + sModuleIDPath;
+
+  // ...and append the file extension 'js' in case no extension is given
+  // @TODO: Might change in future.
+  LPCTSTR lpszExtension = PathFindExtension(sModulePath);
+  if (!_tcslen(lpszExtension))
+  {
+    sModulePath += _T(".js");
+  }
+
+  if (!PathFileExists(sModulePath))
+  {
+    return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
+  }
+  if (psRet)
+  {
+    (*psRet) = sModulePath;
+  }
+  return S_OK;
+}
+
 HRESULT CMagpieFilesystemScriptLoader::Init(LPCOLESTR lpsRootPath)
 {
   if (!PathFileExists(lpsRootPath))
@@ -78,29 +104,23 @@ HRESULT CMagpieFilesystemScriptLoader::Init(LPCOLESTR lpsRootPath)
 // IMagpieScriptLoader implementation
 
 //----------------------------------------------------------------------------
+//  HasModuleScript
+STDMETHODIMP CMagpieFilesystemScriptLoader::HasModuleScript(
+  const OLECHAR* lpszModuleID)
+{
+  return ResolveModuleID(lpszModuleID);
+}
+
+
+//----------------------------------------------------------------------------
 //  GetModuleScript
 STDMETHODIMP CMagpieFilesystemScriptLoader::GetModuleScript(
   const OLECHAR* lpszModuleID, BSTR * pbsScript)
 {
   ENSURE_RETVAL(pbsScript)
 
-  // create a real path from the module ID...
-  CString sModulePath, sModuleIDPath(lpszModuleID);
-  sModuleIDPath.Replace(_T('/'), _T('\\'));
-  sModulePath = m_sRootPath + sModuleIDPath;
-
-  // ...and append the file extension 'js' in case no extension is given
-  // @TODO: Might change in future.
-  LPCTSTR lpszExtension = PathFindExtension(sModulePath);
-  if (!_tcslen(lpszExtension))
-  {
-    sModulePath += _T(".js");
-  }
-
-  if (!PathFileExists(sModulePath))
-  {
-    return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
-  }
+  CString sModulePath;
+  IF_FAILED_RET(ResolveModuleID(lpszModuleID, &sModulePath));
 
   CAtlFile f;
 
@@ -129,3 +149,35 @@ STDMETHODIMP CMagpieFilesystemScriptLoader::GetModuleScript(
   return (*pbsScript) ? S_OK : E_OUTOFMEMORY;
 }
 
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// IMagpieScriptLoader2 implementation
+//----------------------------------------------------------------------------
+//  GetProperty
+STDMETHODIMP CMagpieFilesystemScriptLoader::GetProperty(
+  const OLECHAR* lpszModuleID, const OLECHAR* lpszPropID, BSTR * pbsRet)
+{
+  ENSURE_RETVAL(pbsRet)
+  CString sFilePath;
+
+  LPCOLESTR lpszRetVal = NULL;
+
+  if (0 == wcscmp(lpszPropID, L"filename"))
+  {
+    IF_FAILED_RET(ResolveModuleID(lpszModuleID, &sFilePath));
+    lpszRetVal = sFilePath;
+  }
+  else if (0 == wcscmp(lpszPropID, L"relname"))
+  {
+    IF_FAILED_RET(ResolveModuleID(lpszModuleID, &sFilePath));
+    sFilePath = sFilePath.Mid(m_sRootPath.GetLength());
+    lpszRetVal = sFilePath;
+  }
+
+  if (lpszRetVal)
+  {
+    (*pbsRet) = SysAllocString(lpszRetVal);
+    return S_OK;
+  }
+  return E_FAIL;
+}
