@@ -140,20 +140,16 @@ private:
   //  This flag is used to prevent circular inclusions. Immediately before 
   //  this module runs the flag is set (inside Run() method), so calling
   //  Run() again does nothing.
-  BOOL
-            m_bDidRun;
+  BOOL      m_bDidRun;
 
   // the module's absolute ID
-  CString
-            m_sID;
+  CString   m_sID;
 
   // the module's file name if any
-  CString
-            m_sFilename;
+  CString   m_sFilename;
 
   // script source
-  CComBSTR
-            m_bsScriptSource;
+  CComBSTR  m_bsScriptSource;
 
   // the module's require object
   CComPtr<CMagpieRequireComObject>

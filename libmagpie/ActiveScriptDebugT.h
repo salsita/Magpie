@@ -87,7 +87,9 @@ public:
     {
       return E_UNEXPECTED; ///< init failed
     }
-    // see if we have a parent
+    // see if we have a parent. it is safe to look the parent up even if dwParentSourceContext
+    // is 0 because we will not find a parent in this case. this safes one additional if-clause
+    // since we have to check debugDocHelperParent for NULL anyway.
     CComPtr<IDebugDocumentHelper>
       debugDocHelperParent(m_debugDocHelpers.Lookup(dwParentSourceContext));
 

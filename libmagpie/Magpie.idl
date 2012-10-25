@@ -309,7 +309,7 @@ library MagpieLib
   [
 	  helpstring(
     "IMagpieScriptLoader2 Interface. Support this interface to expose extra"
-    " information like a filename or some identifyer."
+    " information like a filename or some identifier."
     ),
 	  object,
 	  uuid(EC310E49-EF0C-4c91-8B27-FEA254803009),
