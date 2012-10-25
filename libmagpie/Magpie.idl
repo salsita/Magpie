@@ -76,6 +76,12 @@ interface IMagpieApplication : IUnknown
   HRESULT RunScript([in, string] const OLECHAR* lpszModuleID, [in, string] const OLECHAR* lpszScript);
 
   [helpstring(
+    "ExecuteScript-method. Executes a script text passed in lpszScript in the context of"
+    "lpszModuleID. This can be used to execute scripts generated on the fly."
+  )]
+  HRESULT ExecuteScript([in, string] const OLECHAR* lpszScript, [in, string] const OLECHAR* lpszModuleID);
+
+  [helpstring(
     "AddExtension-method. Adds an extension that is available as a global object"
     "(like require or console)."
   )]

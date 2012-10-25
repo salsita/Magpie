@@ -354,6 +354,20 @@ STDMETHODIMP CMagpieApplication::RunScript(
 }
 
 //----------------------------------------------------------------------------
+//  ExecuteScript
+STDMETHODIMP CMagpieApplication::ExecuteScript(
+  const OLECHAR* lpszScript, const OLECHAR* lpszModuleID)
+{
+  CComPtr<IMagpieModule> pModule;
+  const OLECHAR* lpsModID = (lpszModuleID)
+    ? lpszModuleID
+    : L"";
+  // pModule will be null if not found
+  m_Modules.Lookup(lpsModID, pModule);
+  return m_ScriptEngine.ExecuteScriptForModule(lpszScript, (CMagpieModule*)pModule.p);
+}
+
+//----------------------------------------------------------------------------
 //  AddExtension
 STDMETHODIMP CMagpieApplication::AddExtension(
   const OLECHAR* lpszExtensionName, IDispatch* pDispExtension)
