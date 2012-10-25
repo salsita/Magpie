@@ -56,6 +56,31 @@ void CMagpieResourceScriptLoader::FinalRelease()
   int asd = 0;
 }
 
+HRESULT CMagpieResourceScriptLoader::ResolveModuleID(LPCOLESTR lpszModuleID, CString * psRet)
+{
+  if (!m_hModule)
+  {
+    return E_UNEXPECTED;
+  }
+
+  // Adjust the module id. Forward slashes are not allowed in resource
+  // identifiers, so we use '|' instead.
+  CString sModuleIDPath(lpszModuleID);
+  sModuleIDPath.Replace(_T('/'), _T('|'));
+
+  HRSRC hRes = FindResource(
+    m_hModule, sModuleIDPath, MAKEINTRESOURCE(RT_HTML));
+  if(hRes)
+  {
+    if (psRet)
+    {
+      (*psRet) = sModuleIDPath;
+    }
+    return S_OK;
+  }
+  return S_FALSE;
+}
+
 HRESULT CMagpieResourceScriptLoader::Init(HMODULE hModule)
 {
   m_hModule = hModule;
@@ -65,6 +90,15 @@ HRESULT CMagpieResourceScriptLoader::Init(HMODULE hModule)
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 // IMagpieScriptLoader implementation
+
+//----------------------------------------------------------------------------
+//  HasModuleScript
+STDMETHODIMP CMagpieResourceScriptLoader::HasModuleScript(
+  const OLECHAR* lpszModuleID)
+{
+  return ResolveModuleID(lpszModuleID);
+}
+
 
 //----------------------------------------------------------------------------
 //  GetModuleScript

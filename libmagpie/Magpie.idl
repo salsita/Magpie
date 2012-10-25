@@ -296,9 +296,34 @@ library MagpieLib
   interface IMagpieScriptLoader : IUnknown
   {
     [helpstring(
+      "HasModuleScript. Check if script loader has a script for this ID."
+      " Return S_OK if yes, something else if not. S_FALSE is acceptable."
+    )]
+    HRESULT HasModuleScript([in, string] const OLECHAR* lpszModuleID);
+
+    [helpstring(
       "GetModuleScript. Called to get the script source for lpszModuleID."
     )]
     HRESULT GetModuleScript([in, string] const OLECHAR* lpszModuleID, [out, retval] BSTR * pbsScript);
+  };
+
+  /*==========================================================================*/
+  [
+	  helpstring(
+    "IMagpieScriptLoader2 Interface. Support this interface to expose extra"
+    " information like a filename or some identifier."
+    ),
+	  object,
+	  uuid(EC310E49-EF0C-4c91-8B27-FEA254803009),
+	  pointer_default(unique)
+  ]
+  interface IMagpieScriptLoader2 : IUnknown
+  {
+    [helpstring(
+      "GetProperty. Called to get a property like filename etc."
+    )]
+    HRESULT GetProperty([in, string] const OLECHAR* lpszModuleID,
+      [in, string] const OLECHAR* lpszPropID, [out, retval] BSTR * pbsRet);
   };
 
 /*==========================================================================*/

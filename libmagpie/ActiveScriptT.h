@@ -108,8 +108,12 @@ public:
   // lpszModuleName is the namespace for the module, in case it is NULL
   //  the script will get added to the global namespace.
 	HRESULT AddScript(LPCOLESTR lpszSource,
-                    LPCOLESTR lpszModuleName = NULL)
+                    LPCOLESTR lpszModuleName = NULL,
+                    LPCOLESTR lpszModuleLongName = NULL,
+                    DWORD_PTR *pdwSourceContext = NULL // in/out
+                    )
   {
+    // dwSourceContext can contain now the parent context
 	  ATLASSERT(m_ScriptEngine && m_ScriptEngineParser);
 	  if(!m_ScriptEngine || !m_ScriptEngineParser)
     {
@@ -119,14 +123,22 @@ public:
     DWORD_PTR dwSourceContext = 0;
     __if_exists(Timpl::AddScriptForDebug)
     {
+      DWORD_PTR dwParentSourceContext = (pdwSourceContext)
+        ? (*pdwSourceContext)
+        : 0;
       // add script to debugging support
       Timpl* pImpl = (Timpl*)this;
-      IF_FAILED_RET(pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, dwSourceContext));
+      IF_FAILED_RET(pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, lpszModuleLongName, dwSourceContext, dwParentSourceContext));
     }
 
     // parse script text
 	  IF_FAILED_RET(m_ScriptEngineParser->ParseScriptText(
       lpszSource, lpszModuleName, 0, 0, dwSourceContext, 0, SCRIPTTEXT_HOSTMANAGESSOURCE|SCRIPTTEXT_ISVISIBLE, 0, 0));
+    // set *pdwSourceContext to resulting source context
+    if (pdwSourceContext)
+    {
+      (*pdwSourceContext) = dwSourceContext;
+    }
     return S_OK;
   }
 

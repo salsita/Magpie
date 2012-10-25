@@ -50,11 +50,10 @@ public:
 public:
   // -------------------------------------------------------------------------
   // static creator function
-  // WATCH IT! On success the created object takes ownership of bsScriptSource
-  // to prevent unnecessary copies!
-  static HRESULT CreateObject(CMagpieApplication  &       application,
+  static HRESULT CreateObject(CMagpieApplication       &  application,
                               LPCOLESTR                   lpsModuleID,
-                              CComBSTR                 &  bsScriptSource,
+                              IMagpieScriptLoader      *  pScriptLoader,
+                              LPCOLESTR                   lpszScriptSource,
                               CMagpieModuleComObject  *&  pRet);
 
 public:
@@ -91,9 +90,18 @@ public:
   void GetID(CString & sModuleID)
                   {sModuleID = m_sID;}
 
+  void GetFilename(CString & sFilename)
+                  {sFilename = m_sFilename;}
+
   LPCOLESTR GetScriptSource()
                   {ATLASSERT((LPCOLESTR)m_bsScriptSource);
                     return m_bsScriptSource;}
+  
+  DWORD_PTR GetSourceContext()
+                  { return m_dwScriptContext;}
+
+  void SetSourceContext(DWORD_PTR dwScriptContext)
+                  { m_dwScriptContext = dwScriptContext;}
 
 public:
   // -------------------------------------------------------------------------
@@ -115,11 +123,10 @@ private:
   // -------------------------------------------------------------------------
   // Private methods.
 
-  // Init: WATCH IT! Takes ownership of bsScriptSource to prevent unnecessary
-  // copies!
 	HRESULT Init(CMagpieApplication & application,
-                LPCOLESTR           lpsModuleID,
-                CComBSTR          & bsScriptSource);
+                LPCOLESTR             lpsModuleID,
+                IMagpieScriptLoader * pScriptLoader,
+                LPCOLESTR             lpszScriptSource);
 
 private:
   // -------------------------------------------------------------------------
@@ -133,16 +140,16 @@ private:
   //  This flag is used to prevent circular inclusions. Immediately before 
   //  this module runs the flag is set (inside Run() method), so calling
   //  Run() again does nothing.
-  BOOL
-            m_bDidRun;
+  BOOL      m_bDidRun;
 
   // the module's absolute ID
-  CString
-            m_sID;
+  CString   m_sID;
+
+  // the module's file name if any
+  CString   m_sFilename;
 
   // script source
-  CComBSTR
-            m_bsScriptSource;
+  CComBSTR  m_bsScriptSource;
 
   // the module's require object
   CComPtr<CMagpieRequireComObject>
@@ -156,5 +163,8 @@ private:
   CComQIPtr<IDispatchEx>
             m_Exports;
 #endif // def USE_MODULES_EXPORT_OBJECT
+
+  // the script source context
+  DWORD_PTR m_dwScriptContext;
 };
 

@@ -19,7 +19,8 @@ typedef CComObject<CMagpieFilesystemScriptLoader>
 
 class ATL_NO_VTABLE CMagpieFilesystemScriptLoader :
 	public CComObjectRootEx<CComSingleThreadModel>,
-  public IMagpieScriptLoader
+  public IMagpieScriptLoader,
+  public IMagpieScriptLoader2
 {
 public:
   // -------------------------------------------------------------------------
@@ -37,6 +38,7 @@ public:
   // COM interface map
   BEGIN_COM_MAP(CMagpieFilesystemScriptLoader)
 	  COM_INTERFACE_ENTRY(IMagpieScriptLoader)
+    COM_INTERFACE_ENTRY(IMagpieScriptLoader2)
   END_COM_MAP()
 
 public:
@@ -59,12 +61,17 @@ public:
 public:
   // -------------------------------------------------------------------------
   // IMagpieScriptLoader methods. See .idl for description.
+  STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
   STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
+
+  // IMagpieScriptLoader2 methods. See .idl for description.
+  STDMETHOD(GetProperty)(const OLECHAR* lpszModuleID, const OLECHAR* lpszPropID, BSTR * pbsRet);
 
 private:
   // -------------------------------------------------------------------------
   // Private methods.
 
+	HRESULT ResolveModuleID(LPCOLESTR lpszModuleID, CString * psRet = NULL);
 	HRESULT Init(LPCOLESTR lpsRootPath);
 
 private:

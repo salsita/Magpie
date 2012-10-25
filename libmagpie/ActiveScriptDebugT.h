@@ -74,24 +74,58 @@ public:
   //----------------------------------------------------------------------------
   //  AddScriptForDebug
   //  Register a script for debugging support
-  HRESULT AddScriptForDebug(IActiveScript* scriptEngine, LPCOLESTR lpszSource,
-                    LPCOLESTR lpszModuleName, DWORD_PTR & dwSourceContext)
+  HRESULT AddScriptForDebug(
+    IActiveScript*  scriptEngine, // ptr to the script engine
+    LPCOLESTR       lpszSource,   // the actual script source
+    LPCOLESTR       lpszDocName,  // a short name for debugging
+    LPCOLESTR       lpszDocNameLong,  // a long name for debugging such as a filename
+    DWORD_PTR     & dwSourceContext,  // OUT: the debbuging context
+    DWORD_PTR       dwParentSourceContext = 0 // OPTIONAL: the debugging context of the logical parent
+    )
   {
     if (!m_debugManager)
     {
       return E_UNEXPECTED; ///< init failed
     }
+    // see if we have a parent. it is safe to look the parent up even if dwParentSourceContext
+    // is 0 because we will not find a parent in this case. this safes one additional if-clause
+    // since we have to check debugDocHelperParent for NULL anyway.
+    CComPtr<IDebugDocumentHelper>
+      debugDocHelperParent(m_debugDocHelpers.Lookup(dwParentSourceContext));
 
     CComPtr<IDebugDocumentHelper> debugDocHelper;
-    IF_FAILED_RET(m_debugManager->CreateDebugDocumentHelper(NULL, &debugDocHelper));
-    IF_FAILED_RET(debugDocHelper->Init(m_debugApp, lpszModuleName, lpszModuleName, TEXT_DOC_ATTR_READONLY));
+    if (debugDocHelperParent)
+    {
+      // if we have a parent add script text to that instance
+      // add source code
+      IF_FAILED_RET(debugDocHelperParent->AddUnicodeText(lpszSource));
+      // adjust out value to the found context
+      dwSourceContext = dwParentSourceContext;
+      // now the executed script appears nicely at the bottom of the according module
+      // script - the parent. This is nice for executing free scripts in a module, they
+      // don't appear in the debugger as new blocks, they get added to the parent script.
+      // But pls see the comments in CMagpieModule::Init
+    }
+    else
+    {
+      // create a new IDebugDocumentHelper
+      IF_FAILED_RET(m_debugManager->CreateDebugDocumentHelper(NULL, &debugDocHelper));
+      IF_FAILED_RET(debugDocHelper->Init(
+        m_debugApp,
+        lpszDocName,
+        (lpszDocNameLong) ? lpszDocNameLong : lpszDocName,
+        TEXT_DOC_ATTR_READONLY));
+      // Modules don't have a parent
+      IF_FAILED_RET(debugDocHelper->Attach(NULL));
+      // add source code
+      IF_FAILED_RET(debugDocHelper->AddUnicodeText(lpszSource));
+      // define a block for this code
+      IF_FAILED_RET(debugDocHelper->DefineScriptBlock(0, (ULONG)wcslen(lpszSource),
+        scriptEngine, FALSE, &dwSourceContext));
+      m_debugDocHelpers.Add(dwSourceContext, debugDocHelper);
+    }
 
-    IF_FAILED_RET(debugDocHelper->Attach(NULL));
-    IF_FAILED_RET(debugDocHelper->AddUnicodeText(lpszSource));
-    IF_FAILED_RET(debugDocHelper->DefineScriptBlock(0, (ULONG)wcslen(lpszSource), scriptEngine, FALSE, &dwSourceContext));
-
-    m_debugDocHelpers.Add(dwSourceContext, debugDocHelper);
-
+    // dwSourceContext contains now the debugging source context
     return S_OK;
   }
 
