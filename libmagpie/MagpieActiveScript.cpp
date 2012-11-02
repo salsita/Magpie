@@ -94,6 +94,38 @@ HRESULT CMagpieActiveScript::RunModule(
 }
 
 //----------------------------------------------------------------------------
+//  ExecuteScriptForModule
+HRESULT CMagpieActiveScript::ExecuteScriptForModule(
+  const OLECHAR* lpszScript,
+  CMagpieModule* pModule)
+{
+  m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
+  CString sModuleID;
+  LPCTSTR lpszModuleID = NULL;
+  DWORD_PTR dwParentSourceContext = 0;
+  if (pModule)
+  {
+    // get id
+    pModule->GetID(sModuleID);
+    lpszModuleID = sModuleID;
+    // get parent context
+    dwParentSourceContext = pModule->GetSourceContext();
+  }
+  // lpszModuleID can be NULL now.
+  // set debug context to the module or to global if lpszModuleID is NULL.
+  m_Application.EnterModule(lpszModuleID);
+  // run script
+  HRESULT hr = E_FAIL;
+  hr = CActiveScriptT::AddScript(lpszScript, lpszModuleID, NULL, &dwParentSourceContext);
+  if (SUCCEEDED(hr))
+  {
+    m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
+  }
+  m_Application.ExitModule();
+  return S_OK;
+}
+
+//----------------------------------------------------------------------------
 //  AddNamedItem
 HRESULT CMagpieActiveScript::AddNamedItem(
   LPCOLESTR   pstrName,

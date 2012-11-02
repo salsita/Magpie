@@ -118,6 +118,7 @@ public:
   STDMETHOD(AddResourceScriptLoader)(HANDLE_PTR hModule);
   STDMETHOD(Run)(const OLECHAR* lpszModuleID);
   STDMETHOD(RunScript)(const OLECHAR* lpszModuleID, const OLECHAR* lpszScript);
+  STDMETHOD(ExecuteScript)(const OLECHAR* lpszScript, const OLECHAR* lpszModuleID);
   STDMETHOD(AddExtension)(const OLECHAR* lpszExtensionName, IDispatch* pDispExtension);
   STDMETHOD(GetModuleObject)(const OLECHAR* lpszModuleID, IMagpieModuleRestricted ** ppRet);
   STDMETHOD(AddNamedItem)(const OLECHAR* lpszName, IDispatch * pDisp, ULONG ulFlags);

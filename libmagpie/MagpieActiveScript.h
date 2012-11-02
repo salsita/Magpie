@@ -73,6 +73,9 @@ public:
   //  already.
   HRESULT RunModule(CMagpieModule* pModule);
 
+  // Runs a script source in the context of a certain module
+  HRESULT ExecuteScriptForModule(const OLECHAR* lpszScript, CMagpieModule* pModule);
+
   // Simply adds a named item to the script engine. Used to inject objects
   //  into the global namespace of the script engine.
   HRESULT AddNamedItem(LPCOLESTR    pstrName,
