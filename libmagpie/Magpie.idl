@@ -27,7 +27,7 @@ interface IMagpieModuleRestricted;
 interface IMagpieApplication : IUnknown
 {
   [helpstring(
-    "Init-method. Must be called first to initialize everything."
+    "Init method. Must be called first to initialize everything."
     "lpszAppName is the name that appears in the debugger for this instance."
   )]
   HRESULT Init([in, string] const OLECHAR* lpszAppName);
@@ -64,25 +64,25 @@ interface IMagpieApplication : IUnknown
   HRESULT AddResourceScriptLoader([in] HANDLE_PTR hModule);
 
   [helpstring(
-    "Run-method. Pass the module ID of your main script in "
+    "Run method. Pass the module ID of your main script in "
     "lpszModuleID."
   )]
   HRESULT Run([in, string] const OLECHAR* lpszModuleID);
 
   [helpstring(
-    "RunScript-method. Runs a script text passed in lpszScript as module"
+    "RunScript method. Runs a script text passed in lpszScript as module"
     "lpszModuleID."
   )]
   HRESULT RunScript([in, string] const OLECHAR* lpszModuleID, [in, string] const OLECHAR* lpszScript);
 
   [helpstring(
-    "ExecuteScript-method. Executes a script text passed in lpszScript in the context of"
+    "ExecuteScript method. Executes a script text passed in lpszScript in the context of"
     "lpszModuleID. This can be used to execute scripts generated on the fly."
   )]
   HRESULT ExecuteScript([in, string] const OLECHAR* lpszScript, [in, string] const OLECHAR* lpszModuleID);
 
   [helpstring(
-    "AddExtension-method. Adds an extension that is available as a global object"
+    "AddExtension method. Adds an extension that is available as a global object"
     "(like require or console)."
   )]
   HRESULT AddExtension([in, string] const OLECHAR* lpszExtensionName, [in] IDispatch* pDispExtension);
@@ -98,7 +98,7 @@ interface IMagpieApplication : IUnknown
   HRESULT AddNamedItem([in, string] const OLECHAR* lpszName, [in] IDispatch * pDisp, [in] ULONG ulFlags);
 
   [helpstring(
-    "Shutdown-method. Call to stop the script engine and cleanup everything."
+    "Shutdown method. Call to stop the script engine and cleanup everything."
   )]
   HRESULT Shutdown();
 
