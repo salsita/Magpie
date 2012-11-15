@@ -126,6 +126,26 @@ HRESULT CMagpieActiveScript::ExecuteScriptForModule(
 }
 
 //----------------------------------------------------------------------------
+//  ExecuteScriptForModule
+HRESULT CMagpieActiveScript::ExecuteGlobal(CMagpieModule* pModule)
+{
+  m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
+  DWORD_PTR dwSourceContext = 0;
+  
+  // enter global context
+  m_Application.EnterModule(NULL);
+  // run script
+  HRESULT hr = E_FAIL;
+  hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), NULL, NULL, &dwSourceContext);
+  if (SUCCEEDED(hr))
+  {
+    m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
+  }
+  m_Application.ExitModule();
+  return S_OK;
+}
+
+//----------------------------------------------------------------------------
 //  AddNamedItem
 HRESULT CMagpieActiveScript::AddNamedItem(
   LPCOLESTR   pstrName,

@@ -368,6 +368,19 @@ STDMETHODIMP CMagpieApplication::ExecuteScript(
 }
 
 //----------------------------------------------------------------------------
+//  ExecuteScript
+STDMETHODIMP CMagpieApplication::ExecuteGlobal(
+  const OLECHAR* lpszModuleID)
+{
+  // load the module
+  CComPtr<CMagpieModuleComObject> pModule;
+  IF_FAILED_RET(LoadModule(NULL, lpszModuleID, NULL, pModule.p));
+
+  return m_ScriptEngine.ExecuteGlobal((CMagpieModule*)pModule.p);
+}
+
+
+//----------------------------------------------------------------------------
 //  AddExtension
 STDMETHODIMP CMagpieApplication::AddExtension(
   const OLECHAR* lpszExtensionName, IDispatch* pDispExtension)

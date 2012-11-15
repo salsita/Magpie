@@ -82,6 +82,12 @@ interface IMagpieApplication : IUnknown
   HRESULT ExecuteScript([in, string] const OLECHAR* lpszScript, [in, string] const OLECHAR* lpszModuleID);
 
   [helpstring(
+    "ExecuteGlobal method. Executes a 'module' in the global context. Can be used to execute"
+    "content of script files which need to bypass the require module mechanism"
+  )]
+  HRESULT ExecuteGlobal([in, string] const OLECHAR* lpszModuleID);
+
+  [helpstring(
     "AddExtension method. Adds an extension that is available as a global object"
     "(like require or console)."
   )]
