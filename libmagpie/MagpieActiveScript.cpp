@@ -131,7 +131,7 @@ HRESULT CMagpieActiveScript::ExecuteGlobal(CMagpieModule* pModule)
 {
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   DWORD_PTR dwSourceContext = 0;
-  
+
   // enter global context
   m_Application.EnterModule(NULL);
   // run script
