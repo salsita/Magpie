@@ -37,7 +37,7 @@ set(${PROJECT_NAME}_HEADERS
   "${${PROJECT_NAME}_INC_DIR}/_IMagpieLoggerEvents_CP.H"
   )
 
-set(${PROJECT_NAME}_SOURCES 
+set(${PROJECT_NAME}_SOURCES
   "${${PROJECT_NAME}_SRC_DIR}/DispExIdManager.cpp"
   "${${PROJECT_NAME}_SRC_DIR}/MagpieActiveScript.cpp"
   "${${PROJECT_NAME}_SRC_DIR}/MagpieApplication.cpp"
@@ -110,7 +110,7 @@ if (${CMAKE_CL_64})
   set(MIDL_ENV_ARG win64)
 endif (${CMAKE_CL_64})
 
-set(${PROJECT_NAME}_MIDL_ARGUMENTS 
+set(${PROJECT_NAME}_MIDL_ARGUMENTS
                      "${${PROJECT_NAME}_IDL_FILE}"
                      /D $<$<CONFIG:Debug>:"_DEBUG"> $<$<CONFIG:Release>:"NDEBUG">
                      /D "MODULES_HAVE_EXPORT_PROPERTY"
@@ -132,14 +132,19 @@ set(${PROJECT_NAME}_MIDL_ARGUMENTS
 
 ################# MAIN TARGET SETUP #########################
 
-add_library(${PROJECT_NAME} STATIC 
-  ${${PROJECT_NAME}_SOURCES} 
-  ${${PROJECT_NAME}_HEADERS} 
+add_library(${PROJECT_NAME} STATIC
+  ${${PROJECT_NAME}_SOURCES}
+  ${${PROJECT_NAME}_HEADERS}
   ${${PROJECT_NAME}_GENERATED_FILES}
   )
 
 # set UNICODE
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_DEFINITIONS _UNICODE,UNICODE)
+
+# _WIN64
+if (${CMAKE_CL_64})
+  add_definitions(-DWIN64 -D_WIN64)
+endif (${CMAKE_CL_64})
 
 # exclude default libraries
 set_target_properties(${PROJECT_NAME} PROPERTIES STATIC_LIBRARY_FLAGS /NODEFAULTLIB)
