@@ -39,7 +39,16 @@ public:
 #ifdef SCRIPTDEBUG_CREATE_APPLICATION
     IF_FAILED_RET(m_debugManager->CreateApplication(&m_debugApp));
     IF_FAILED_RET(m_debugApp->SetName(appId));
-    IF_FAILED_RET(m_debugManager->AddApplication(m_debugApp, &m_appCookie));
+    // There seems to be a bug in the debug manager:
+    // CProcessDebugManager::AddApplication ->
+    // CDebugApplication::Publish ->
+    // ...
+    // CPublisherSharedMemory::PublishFlatProgram ->
+    // CSharedMemory<WRITE_TRAITS>::Initialize ->
+    // CreateFileMapping -> ERROR_ALREADY_EXISTS seems to be handled incorrect in 64bit version.
+    // Debugging still works, but AddApplication / GetDefaultApplication fails.
+    // So for now, until the bug might one day be fixed, we don't check the return value.
+    m_debugManager->AddApplication(m_debugApp, &m_appCookie);
 #else
     IF_FAILED_RET(m_debugManager->GetDefaultApplication(&m_debugApp));
 #endif
