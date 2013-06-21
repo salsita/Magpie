@@ -110,7 +110,7 @@ if (${CMAKE_CL_64})
   set(MIDL_ENV_ARG win64)
 endif (${CMAKE_CL_64})
 
-set(${PROJECT_NAME}_MIDL_ARGUMENTS 
+set(${PROJECT_NAME}_MIDL_ARGUMENTS
                      "${${PROJECT_NAME}_IDL_FILE}"
                      /D $<$<CONFIG:Debug>:"_DEBUG"> $<$<CONFIG:Release>:"NDEBUG">
                      /D "MODULES_HAVE_EXPORT_PROPERTY"
@@ -135,6 +135,7 @@ set(${PROJECT_NAME}_MIDL_ARGUMENTS
 add_library(${PROJECT_NAME} STATIC
   ${${PROJECT_NAME}_SOURCES}
   ${${PROJECT_NAME}_HEADERS}
+  ${${PROJECT_NAME}_IDL_FILE}
   ${${PROJECT_NAME}_GENERATED_FILES}
   )
 
