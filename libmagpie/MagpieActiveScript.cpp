@@ -65,10 +65,13 @@ HRESULT CMagpieActiveScript::RunModule(
 
   // add namespace for module
   IF_FAILED_RET(m_ScriptEngine->AddNamedItem(sModuleID, SCRIPTITEM_CODEONLY));
+  //m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
 
   // dispatch for module's namespace
   CIDispatchHelper script;
-  IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(sModuleID, &script));
+  //IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(sModuleID, &script));
+  HRESULT hr1 = m_ScriptEngine->GetScriptDispatch(sModuleID, &script);
+  ATLASSERT(script);
 
   // inject CommonJS objects
   script.SetPropertyByRef(L"require", CComVariant(pModuleRequireOb));

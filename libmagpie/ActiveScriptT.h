@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include <activscp.h>
+#include "activscp.h"
 
 // must be declared somewhere in a .cpp file
 extern CLSID CLSID_JScript;
+extern CLSID CLSID_JScript9;
 
 /*============================================================================
  * template CActiveScriptT
@@ -65,8 +66,51 @@ public:
     {
 	    // create engine
 	    hr = ::CoCreateInstance(
-        clsid, NULL, CLSCTX_ALL, IID_IActiveScript, (void **)&m_ScriptEngine);
+        clsid, NULL, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, IID_IActiveScript, (void **)&m_ScriptEngine);
       if(FAILED(hr)) break;
+
+      // get IActiveScriptProperty-interface
+      CComQIPtr<IActiveScriptProperty> propInterface(m_ScriptEngine);
+      if (propInterface) {
+
+        // and set correct version
+        // *sigh*:
+        // - there is no SCRIPTLANGUAGEVERSION_9
+        // - SCRIPTLANGUAGEVERSION_MAX fails with E_INVALIDARG
+        // - SCRIPTLANGUAGEVERSION_DEFAULT defaults to some older version
+        // but we need jscript9. So we use 15, which is the highest value which is still
+        // accepted by SetProperty.
+        // This is totally undocumented, activscp.h does not contain any values above
+        // SCRIPTLANGUAGEVERSION_5_8.
+        // Also note that SetProperty will fail if vtVersion is not a VT_I4. So we cast
+        // explicitly to int.
+        CComVariant vtVersion((int)15);
+        hr = propInterface->SetProperty(SCRIPTPROP_INVOKEVERSIONING, NULL, &vtVersion);
+        ATLASSERT(SUCCEEDED(hr));
+#ifdef _DEBUG
+
+        CComVariant vt;
+        CString name, verLow(_T("?")), verHigh(_T("?")), buildNo(_T("?"));
+        name = (SUCCEEDED(propInterface->GetProperty(SCRIPTPROP_NAME, 0, &vt)))
+          ? vt
+          : _T("ERROR");
+        vt.Clear();
+        if (SUCCEEDED(propInterface->GetProperty(SCRIPTPROP_MAJORVERSION, 0, &vt))) {
+          verHigh.Format(_T("%i"), vt.lVal);
+        }
+        vt.Clear();
+        if (SUCCEEDED(propInterface->GetProperty(SCRIPTPROP_MINORVERSION, 0, &vt))) {
+          verLow.Format(_T("%i"), vt.lVal);
+        }
+        vt.Clear();
+        if (SUCCEEDED(propInterface->GetProperty(SCRIPTPROP_BUILDNUMBER, 0, &vt))) {
+          buildNo.Format(_T("%i"), vt.lVal);
+        }
+        CString s;
+        s.Format(_T("LOADED script engine \"%s %s.%s.%s\"\n"), name, verHigh, verLow, buildNo);
+        ATLTRACE(s);
+#endif
+      }
 
       // set this as script site
       hr = m_ScriptEngine->SetScriptSite(
