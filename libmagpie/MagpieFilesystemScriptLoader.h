@@ -80,3 +80,79 @@ private:
 
   CString m_sRootPath;
 };
+
+//============================================================================
+//============================================================================
+// Temporary solution: Special loader for jscript9 because of the bug with
+// GetScriptDispatch() in jscript9. See CMagpieActiveScript::RunModule.
+// This is nearly a copy of CMagpieFilesystemScriptLoader, remove this when
+// the bug is fixed.
+
+class CMagpieFilesystemScriptLoader9;
+typedef CComObject<CMagpieFilesystemScriptLoader9>
+                   CMagpieFilesystemScriptLoader9ComObject;
+
+class ATL_NO_VTABLE CMagpieFilesystemScriptLoader9 :
+	public CComObjectRootEx<CComSingleThreadModel>,
+  public IMagpieScriptLoader,
+  public IMagpieScriptLoader2
+{
+public:
+  // -------------------------------------------------------------------------
+  // ctor
+  CMagpieFilesystemScriptLoader9(void);
+
+public:
+  // -------------------------------------------------------------------------
+  // COM standard stuff
+  DECLARE_NO_REGISTRY();
+	DECLARE_PROTECT_FINAL_CONSTRUCT()
+
+public:
+  // -------------------------------------------------------------------------
+  // COM interface map
+  BEGIN_COM_MAP(CMagpieFilesystemScriptLoader9)
+	  COM_INTERFACE_ENTRY(IMagpieScriptLoader)
+    COM_INTERFACE_ENTRY(IMagpieScriptLoader2)
+  END_COM_MAP()
+
+public:
+  // -------------------------------------------------------------------------
+  // static creator function
+  static HRESULT CreateObject(LPCOLESTR       lpsRootPath,
+                              CMagpieFilesystemScriptLoader9ComObject
+                                          *&  pRet);
+
+public:
+  // -------------------------------------------------------------------------
+  // COM standard methods
+  HRESULT FinalConstruct();
+	void FinalRelease();
+
+public:
+  // -------------------------------------------------------------------------
+  // public methods
+
+public:
+  // -------------------------------------------------------------------------
+  // IMagpieScriptLoader methods. See .idl for description.
+  STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
+  STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
+
+  // IMagpieScriptLoader2 methods. See .idl for description.
+  STDMETHOD(GetProperty)(const OLECHAR* lpszModuleID, const OLECHAR* lpszPropID, BSTR * pbsRet);
+
+private:
+  // -------------------------------------------------------------------------
+  // Private methods.
+
+	HRESULT ResolveModuleID(LPCOLESTR lpszModuleID, CString * psRet = NULL);
+	HRESULT Init(LPCOLESTR lpsRootPath);
+
+private:
+  // -------------------------------------------------------------------------
+  // Private members.
+
+  CString m_sRootPath;
+};
+

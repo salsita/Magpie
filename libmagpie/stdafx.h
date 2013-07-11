@@ -32,6 +32,12 @@ using namespace Misc;
 #include "libbhohelper.h"
 using namespace LIB_BhoHelper;
 
+// Temporary solution: Script wrapping because of the bug with
+// GetScriptDispatch() in jscript9. See CMagpieActiveScript::RunModule.
+// Note that they are ANSI strings!
+extern LPCSTR gJscript9ModuleWrapperIntro;
+extern LPCSTR gJscript9ModuleWrapperExtro;
+
 #ifdef _DEBUG
 // enable script debugger
 #define SCRIPTDEBUG_

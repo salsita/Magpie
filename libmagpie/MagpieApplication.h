@@ -145,6 +145,7 @@ private:
 private:
   // -------------------------------------------------------------------------
   // Private members.
+  static const CLSID sCLSID_JScript;
 
   // Script engine.
   CComObjectStackRefCtorArg<CMagpieActiveScript, CMagpieApplication>

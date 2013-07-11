@@ -14,6 +14,8 @@
  * class CMagpieApplication
  */
 
+const CLSID CMagpieApplication::sCLSID_JScript = CLSID_JScript;
+
 //----------------------------------------------------------------------------
 //  CTOR
 CMagpieApplication::CMagpieApplication() :
@@ -286,7 +288,7 @@ STDMETHODIMP CMagpieApplication::Init(const OLECHAR* lpszAppName)
 
   // init script engine
   // TODO: generate an appID somehow
-  HRESULT hr = m_ScriptEngine.Init(lpszAppName);
+  HRESULT hr = m_ScriptEngine.Init(lpszAppName, sCLSID_JScript);
   IF_FAILED_RET(hr);
 
   // prepare CommonJS objects
@@ -317,6 +319,14 @@ STDMETHODIMP CMagpieApplication::AddScriptLoader(
 STDMETHODIMP CMagpieApplication::AddFilesystemScriptLoader(
   const OLECHAR* lpszRootPath)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
+  if(sCLSID_JScript == CLSID_JScript9) {
+    CComPtr<CMagpieFilesystemScriptLoader9ComObject> loader;
+    IF_FAILED_RET(CMagpieFilesystemScriptLoader9::CreateObject(
+      lpszRootPath, loader.p));
+    m_ScriptLoaders.Add(loader.p);
+    return S_OK;
+  }
   CComPtr<CMagpieFilesystemScriptLoaderComObject> loader;
   IF_FAILED_RET(CMagpieFilesystemScriptLoader::CreateObject(
     lpszRootPath, loader.p));
@@ -329,6 +339,14 @@ STDMETHODIMP CMagpieApplication::AddFilesystemScriptLoader(
 STDMETHODIMP CMagpieApplication::AddResourceScriptLoader(
   HANDLE_PTR hModule)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
+  if(sCLSID_JScript == CLSID_JScript9) {
+    CComPtr<CMagpieResourceScriptLoader9ComObject> loader;
+    IF_FAILED_RET(CMagpieResourceScriptLoader9::CreateObject(
+      (HMODULE)hModule, loader.p));
+    m_ScriptLoaders.Add(loader.p);
+    return S_OK;
+  }
   CComPtr<CMagpieResourceScriptLoaderComObject> loader;
   IF_FAILED_RET(CMagpieResourceScriptLoader::CreateObject(
     (HMODULE)hModule, loader.p));
@@ -350,6 +368,12 @@ STDMETHODIMP CMagpieApplication::Run(
 STDMETHODIMP CMagpieApplication::RunScript(
   const OLECHAR* lpszModuleID, const OLECHAR* lpszScript)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
+  if (sCLSID_JScript == CLSID_JScript9) {
+    CString s;
+    s.Format(_T("(function(require,module,exports){%s\nreturn exports;})"), lpszScript);
+    return RunScriptAsModule(NULL, lpszModuleID, s);
+  }
   return RunScriptAsModule(NULL, lpszModuleID, lpszScript);
 }
 
@@ -358,6 +382,8 @@ STDMETHODIMP CMagpieApplication::RunScript(
 STDMETHODIMP CMagpieApplication::ExecuteScript(
   const OLECHAR* lpszScript, const OLECHAR* lpszModuleID)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
+  ATLASSERT(sCLSID_JScript != CLSID_JScript9);
   CComPtr<IMagpieModule> pModule;
   const OLECHAR* lpsModID = (lpszModuleID)
     ? lpszModuleID
@@ -368,7 +394,7 @@ STDMETHODIMP CMagpieApplication::ExecuteScript(
 }
 
 //----------------------------------------------------------------------------
-//  ExecuteScript
+//  ExecuteGlobal
 STDMETHODIMP CMagpieApplication::ExecuteGlobal(
   const OLECHAR* lpszModuleID)
 {

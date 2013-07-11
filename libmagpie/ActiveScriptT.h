@@ -53,7 +53,7 @@ public:
   //  LoadScriptEngine will leave the engine in SCRIPTSTATE_INITIALIZED.
   //  So after adding scripts put enigne (back) to state SCRIPTSTATE_CONNECTED
   //  to run the scripts.
-  HRESULT LoadScriptEngine(CLSID &clsid)
+  HRESULT LoadScriptEngine(const CLSID & aClsidScriptEngine)
   {
     if (m_ScriptEngine)
     {
@@ -66,7 +66,7 @@ public:
     {
 	    // create engine
 	    hr = ::CoCreateInstance(
-        clsid, NULL, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, IID_IActiveScript, (void **)&m_ScriptEngine);
+        aClsidScriptEngine, NULL, CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER, IID_IActiveScript, (void **)&m_ScriptEngine);
       if(FAILED(hr)) break;
 
       // get IActiveScriptProperty-interface
@@ -84,9 +84,11 @@ public:
         // SCRIPTLANGUAGEVERSION_5_8.
         // Also note that SetProperty will fail if vtVersion is not a VT_I4. So we cast
         // explicitly to int.
-        CComVariant vtVersion((int)15);
-        hr = propInterface->SetProperty(SCRIPTPROP_INVOKEVERSIONING, NULL, &vtVersion);
-        ATLASSERT(SUCCEEDED(hr));
+        if (aClsidScriptEngine == CLSID_JScript9) {
+          CComVariant vtVersion((int)15);
+          hr = propInterface->SetProperty(SCRIPTPROP_INVOKEVERSIONING, NULL, &vtVersion);
+          ATLASSERT(SUCCEEDED(hr));
+        }
 #ifdef _DEBUG
 
         CComVariant vt;
@@ -154,7 +156,8 @@ public:
 	HRESULT AddScript(LPCOLESTR lpszSource,
                     LPCOLESTR lpszModuleName = NULL,
                     LPCOLESTR lpszModuleLongName = NULL,
-                    DWORD_PTR *pdwSourceContext = NULL // in/out
+                    DWORD_PTR *pdwSourceContext = NULL, // in/out
+                    VARIANT   *pvtResult = NULL
                     )
   {
     // dwSourceContext can contain now the parent context
@@ -176,8 +179,10 @@ public:
     }
 
     // parse script text
+    DWORD flags = SCRIPTTEXT_HOSTMANAGESSOURCE|SCRIPTTEXT_ISVISIBLE;
+    flags |= (pvtResult) ? SCRIPTTEXT_ISEXPRESSION : 0;
 	  IF_FAILED_RET(m_ScriptEngineParser->ParseScriptText(
-      lpszSource, lpszModuleName, 0, 0, dwSourceContext, 0, SCRIPTTEXT_HOSTMANAGESSOURCE|SCRIPTTEXT_ISVISIBLE, 0, 0));
+      lpszSource, lpszModuleName, 0, 0, dwSourceContext, 0, flags, pvtResult, 0));
     // set *pdwSourceContext to resulting source context
     if (pdwSourceContext)
     {
