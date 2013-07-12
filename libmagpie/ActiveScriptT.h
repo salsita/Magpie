@@ -72,23 +72,7 @@ public:
       // get IActiveScriptProperty-interface
       CComQIPtr<IActiveScriptProperty> propInterface(m_ScriptEngine);
       if (propInterface) {
-
-        // and set correct version
-        // *sigh*:
-        // - there is no SCRIPTLANGUAGEVERSION_9
-        // - SCRIPTLANGUAGEVERSION_MAX fails with E_INVALIDARG
-        // - SCRIPTLANGUAGEVERSION_DEFAULT defaults to some older version
-        // but we need jscript9. So we use 15, which is the highest value which is still
-        // accepted by SetProperty.
-        // This is totally undocumented, activscp.h does not contain any values above
-        // SCRIPTLANGUAGEVERSION_5_8.
-        // Also note that SetProperty will fail if vtVersion is not a VT_I4. So we cast
-        // explicitly to int.
-        CComVariant vtVersion((int)15);
-        hr = propInterface->SetProperty(SCRIPTPROP_INVOKEVERSIONING, NULL, &vtVersion);
-        ATLASSERT(SUCCEEDED(hr));
 #ifdef _DEBUG
-
         CComVariant vt;
         CString name, verLow(_T("?")), verHigh(_T("?")), buildNo(_T("?"));
         name = (SUCCEEDED(propInterface->GetProperty(SCRIPTPROP_NAME, 0, &vt)))
