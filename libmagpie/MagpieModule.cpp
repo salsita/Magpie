@@ -20,6 +20,7 @@ HRESULT CMagpieModule::CreateObject(
   LPCOLESTR                   lpsModuleID,
   IMagpieScriptLoader      *  pScriptLoader,
   LPCOLESTR                   lpszScriptSource,
+  BOOL                        aDecorateScript,
   CMagpieModuleComObject  *&  pRet)
 {
   CMagpieModuleComObject *newObject = pRet = NULL;
@@ -27,7 +28,7 @@ HRESULT CMagpieModule::CreateObject(
   newObject->AddRef();
 
   HRESULT hr = E_FAIL;
-  hr = newObject->Init(application, lpsModuleID, pScriptLoader, lpszScriptSource);
+  hr = newObject->Init(application, lpsModuleID, pScriptLoader, lpszScriptSource, aDecorateScript);
   if(FAILED(hr))
   {
     newObject->Release();
@@ -68,7 +69,8 @@ HRESULT CMagpieModule::Init(
   CMagpieApplication  & application,
   LPCOLESTR             lpsModuleID,
   IMagpieScriptLoader * pScriptLoader,
-  LPCOLESTR             lpszScriptSource)
+  LPCOLESTR             lpszScriptSource,
+  BOOL                  aDecorateScript)
 {
   ATLASSERT(pScriptLoader || lpszScriptSource);
   m_pApplication = &application;
@@ -79,8 +81,19 @@ HRESULT CMagpieModule::Init(
   }
   else if(pScriptLoader)
   {
-    IF_FAILED_RET(pScriptLoader->GetModuleScript(lpsModuleID, &m_bsScriptSource));
-  // get additional data from script loader
+    // Decorating scripts: Due to the bug in jscript9 (see stdafx.h) there is
+    // no module functionality. To emultate this we wrap certain scripts in
+    // a closure. This regards currently all scripts, except the ones run from
+    // CMagpieApplication::ExecuteGlobal(). These scripts are content scripts
+    // and run in the website, they are ONLY TECHNICALLY MODULES, but are in
+    // fact executed in a global context.
+    if (aDecorateScript) {
+      IF_FAILED_RET(pScriptLoader->GetModuleScriptDecorated(lpsModuleID, gJscript9ModuleWrapperIntro, gJscript9ModuleWrapperExtro, &m_bsScriptSource));
+    }
+    else {
+      IF_FAILED_RET(pScriptLoader->GetModuleScript(lpsModuleID, &m_bsScriptSource));
+    }
+    // get additional data from script loader
     CComQIPtr<IMagpieScriptLoader2> loader2(pScriptLoader);
     if (loader2)
     {

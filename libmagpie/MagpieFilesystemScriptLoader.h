@@ -63,6 +63,11 @@ public:
   // IMagpieScriptLoader methods. See .idl for description.
   STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
   STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
+  STDMETHOD(GetModuleScriptDecorated)(
+          const OLECHAR* lpszModuleID,
+          const OLECHAR* lpszScriptIntro,
+          const OLECHAR* lpszScriptExtro,
+          BSTR * pbsScript);
 
   // IMagpieScriptLoader2 methods. See .idl for description.
   STDMETHOD(GetProperty)(const OLECHAR* lpszModuleID, const OLECHAR* lpszPropID, BSTR * pbsRet);
@@ -87,7 +92,7 @@ private:
 // GetScriptDispatch() in jscript9. See CMagpieActiveScript::RunModule.
 // This is nearly a copy of CMagpieFilesystemScriptLoader, remove this when
 // the bug is fixed.
-
+/*
 class CMagpieFilesystemScriptLoader9;
 typedef CComObject<CMagpieFilesystemScriptLoader9>
                    CMagpieFilesystemScriptLoader9ComObject;
@@ -138,6 +143,11 @@ public:
   // IMagpieScriptLoader methods. See .idl for description.
   STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
   STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
+  STDMETHOD(GetModuleScriptDecorated)(
+          const OLECHAR* lpszModuleID,
+          const OLECHAR* lpszScriptIntro,
+          const OLECHAR* lpszScriptExtro,
+          [out, retval] BSTR * pbsScript);
 
   // IMagpieScriptLoader2 methods. See .idl for description.
   STDMETHOD(GetProperty)(const OLECHAR* lpszModuleID, const OLECHAR* lpszPropID, BSTR * pbsRet);
@@ -156,3 +166,4 @@ private:
   CString m_sRootPath;
 };
 
+*/

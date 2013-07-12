@@ -140,6 +140,7 @@ private:
   HRESULT LoadModule(CMagpieModule          *   pSrcModule,
                      LPCOLESTR                  lpszModuleID,
                      LPCOLESTR                  lpszModuleSource,
+                     BOOL                       aDecorateScript, 
                      CMagpieModuleComObject *&  pRet);
 
 private:

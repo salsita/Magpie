@@ -317,6 +317,15 @@ library MagpieLib
       "GetModuleScript. Called to get the script source for lpszModuleID."
     )]
     HRESULT GetModuleScript([in, string] const OLECHAR* lpszModuleID, [out, retval] BSTR * pbsScript);
+
+    [helpstring(
+      "GetModuleScriptDecorated. Called to get the script source for lpszModuleID with some decoration."
+    )]
+    HRESULT GetModuleScriptDecorated(
+          [in, string] const OLECHAR* lpszModuleID,
+          [in, string] const OLECHAR* lpszScriptIntro,
+          [in, string] const OLECHAR* lpszScriptExtro,
+          [out, retval] BSTR * pbsScript);
   };
 
   /*==========================================================================*/

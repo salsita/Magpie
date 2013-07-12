@@ -61,6 +61,11 @@ public:
   // IMagpieScriptLoader methods. See .idl for description.
   STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
   STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
+  STDMETHOD(GetModuleScriptDecorated)(
+          const OLECHAR* lpszModuleID,
+          const OLECHAR* lpszScriptIntro,
+          const OLECHAR* lpszScriptExtro,
+          BSTR * pbsScript);
 
 private:
   // -------------------------------------------------------------------------
@@ -83,7 +88,7 @@ private:
 // GetScriptDispatch() in jscript9. See CMagpieActiveScript::RunModule.
 // This is nearly a copy of CMagpieResourceScriptLoader, remove this when
 // the bug is fixed.
-
+/*
 class CMagpieResourceScriptLoader9;
 typedef CComObject<CMagpieResourceScriptLoader9>
                    CMagpieResourceScriptLoader9ComObject;
@@ -146,3 +151,4 @@ private:
 
   HMODULE m_hModule;
 };
+*/
