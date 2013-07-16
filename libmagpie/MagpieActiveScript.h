@@ -96,6 +96,11 @@ public:
                          IUnknown   **  ppiunkItem,
                          ITypeInfo  **  ppti);
 
+public:
+  // -------------------------------------------------------------------------
+  // public members
+  int mJscriptVersion;
+
 private:
   // -------------------------------------------------------------------------
   // Private members.

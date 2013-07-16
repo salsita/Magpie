@@ -28,7 +28,8 @@ HRESULT CMagpieModule::CreateObject(
   newObject->AddRef();
 
   HRESULT hr = E_FAIL;
-  hr = newObject->Init(application, lpsModuleID, pScriptLoader, lpszScriptSource, aDecorateScript);
+  hr = newObject->Init(application, lpsModuleID, pScriptLoader, lpszScriptSource,
+      aDecorateScript);
   if(FAILED(hr))
   {
     newObject->Release();
@@ -88,7 +89,10 @@ HRESULT CMagpieModule::Init(
     // and run in the website, they are ONLY TECHNICALLY MODULES, but are in
     // fact executed in a global context.
     if (aDecorateScript) {
-      IF_FAILED_RET(pScriptLoader->GetModuleScriptDecorated(lpsModuleID, gJscript9ModuleWrapperIntro, gJscript9ModuleWrapperExtro, &m_bsScriptSource));
+      IF_FAILED_RET(pScriptLoader->GetModuleScriptDecorated(lpsModuleID,
+          gJscript9ModuleWrapperIntro,
+          gJscript9ModuleWrapperExtro,
+          &m_bsScriptSource));
     }
     else {
       IF_FAILED_RET(pScriptLoader->GetModuleScript(lpsModuleID, &m_bsScriptSource));

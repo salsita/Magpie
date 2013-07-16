@@ -320,16 +320,6 @@ STDMETHODIMP CMagpieApplication::AddScriptLoader(
 STDMETHODIMP CMagpieApplication::AddFilesystemScriptLoader(
   const OLECHAR* lpszRootPath)
 {
-/*
-  // see the bug mentioned in CMagpieActiveScript::RunModule
-  if(sCLSID_JScript == CLSID_JScript9) {
-    CComPtr<CMagpieFilesystemScriptLoader9ComObject> loader;
-    IF_FAILED_RET(CMagpieFilesystemScriptLoader9::CreateObject(
-      lpszRootPath, loader.p));
-    m_ScriptLoaders.Add(loader.p);
-    return S_OK;
-  }
-*/
   CComPtr<CMagpieFilesystemScriptLoaderComObject> loader;
   IF_FAILED_RET(CMagpieFilesystemScriptLoader::CreateObject(
     lpszRootPath, loader.p));
@@ -343,15 +333,6 @@ STDMETHODIMP CMagpieApplication::AddResourceScriptLoader(
   HANDLE_PTR hModule)
 {
   // see the bug mentioned in CMagpieActiveScript::RunModule
-/*
-  if(sCLSID_JScript == CLSID_JScript9) {
-    CComPtr<CMagpieResourceScriptLoader9ComObject> loader;
-    IF_FAILED_RET(CMagpieResourceScriptLoader9::CreateObject(
-      (HMODULE)hModule, loader.p));
-    m_ScriptLoaders.Add(loader.p);
-    return S_OK;
-  }
-*/
   CComPtr<CMagpieResourceScriptLoaderComObject> loader;
   IF_FAILED_RET(CMagpieResourceScriptLoader::CreateObject(
     (HMODULE)hModule, loader.p));
@@ -374,7 +355,7 @@ STDMETHODIMP CMagpieApplication::RunScript(
   const OLECHAR* lpszModuleID, const OLECHAR* lpszScript)
 {
   // see the bug mentioned in CMagpieActiveScript::RunModule
-  if (sCLSID_JScript == CLSID_JScript9) {
+  if (9 == m_ScriptEngine.mJscriptVersion) {
     CString s;
     s.Format(_T("%s%s%s"), gJscript9ModuleWrapperIntro, lpszScript, gJscript9ModuleWrapperExtro);
     return RunScriptAsModule(NULL, lpszModuleID, s);
@@ -388,7 +369,9 @@ STDMETHODIMP CMagpieApplication::ExecuteScript(
   const OLECHAR* lpszScript, const OLECHAR* lpszModuleID)
 {
   // see the bug mentioned in CMagpieActiveScript::RunModule
-  ATLASSERT(sCLSID_JScript != CLSID_JScript9);
+  // currently this method is unused, if this changes handle
+  // this case!
+  ATLASSERT(9 != m_ScriptEngine.mJscriptVersion);
   CComPtr<IMagpieModule> pModule;
   const OLECHAR* lpsModID = (lpszModuleID)
     ? lpszModuleID
@@ -406,6 +389,7 @@ STDMETHODIMP CMagpieApplication::ExecuteGlobal(
   // load the module
   CComPtr<CMagpieModuleComObject> pModule;
   // note that scripts executed in global context DON'T GET WRAPPED!
+  // 4th arg to LoadModule is FALSE for this reason.
   // See stdafx.h, gJscript9ModuleWrapperIntro and CMagpieModule::Init()
   IF_FAILED_RET(LoadModule(NULL, lpszModuleID, NULL, FALSE, pModule.p));
 

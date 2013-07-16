@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------
 //  CTOR
 CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
-  m_Application(application)
+  mJscriptVersion(5), m_Application(application)
 {
 }
 
@@ -24,6 +24,9 @@ CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
 //  Init
 HRESULT CMagpieActiveScript::Init(LPCOLESTR appId, const CLSID & aClsidScriptEngine)
 {
+  if (CLSID_JScript9 == aClsidScriptEngine) {
+    mJscriptVersion = 9;
+  }
 #ifdef SCRIPTDEBUG_
   IF_FAILED_RET(InitializeDebugInterface(appId));
 #endif
@@ -65,14 +68,12 @@ HRESULT CMagpieActiveScript::RunModule(
   // add namespace for module
   IF_FAILED_RET(m_ScriptEngine->AddNamedItem(sModuleID, SCRIPTITEM_CODEONLY));
 
-  // dispatch for module's namespace
-  CIDispatchHelper script;
-  HRESULT hr = m_ScriptEngine->GetScriptDispatch(sModuleID, &script);
-  // Due to a bug in jscript9 this fails with E_OUTOFMEMORY.
-
-  //---------------------------- BEGIN workaround
-  // If so, try a workaround.
-  if (E_OUTOFMEMORY == hr) {
+  HRESULT hr = E_FAIL;
+  if (9 == mJscriptVersion) {
+    // jscript9 lacks module support. We have to handle this differently.
+    // This includes wrapping the module in a closure and loading it as an expression.
+    // The expression will "return" the closure which we will then execute with
+    // "require, module, exports" as arguments.
     // load the module as an expression
     m_Application.EnterModule(sModuleID);
 
@@ -121,11 +122,10 @@ HRESULT CMagpieActiveScript::RunModule(
     m_Application.ExitModule();
     return hr;
   }
-  //---------------------------- END workaround
-
-  // workaround not required, proceed normally.
-  if (SUCCEEDED(hr)) {
-
+  else {
+    // dispatch for module's namespace
+    CIDispatchHelper script;
+    IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(sModuleID, &script));
     // inject CommonJS objects
     script.SetPropertyByRef(L"require", CComVariant(pModuleRequireObject));
     script.SetPropertyByRef(L"exports", CComVariant(pModuleExportsObject));
@@ -137,7 +137,7 @@ HRESULT CMagpieActiveScript::RunModule(
     // Note that the parent debug context is 0. Modules are in the debugger shown
     // at top level.
     DWORD_PTR dwSourceContext = 0;
-    hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID, sFilename, &dwSourceContext);
+    HRESULT hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID, sFilename, &dwSourceContext);
     if (SUCCEEDED(hr)) {
       // set module's source context
       pModule->SetSourceContext(dwSourceContext);
