@@ -14,6 +14,8 @@
  * class CMagpieApplication
  */
 
+const CLSID CMagpieApplication::sCLSID_JScript = CLSID_JScript9;
+
 //----------------------------------------------------------------------------
 //  CTOR
 CMagpieApplication::CMagpieApplication() :
@@ -163,6 +165,7 @@ HRESULT CMagpieApplication::LoadModule(
   CMagpieModule           *   pSrcModule,
   LPCOLESTR                   lpszModuleID,
   LPCOLESTR                   lpszModuleSource,
+  BOOL                        aDecorateScript, 
   CMagpieModuleComObject  *&  pRet)
 {
   CString sModuleID;
@@ -206,7 +209,7 @@ HRESULT CMagpieApplication::LoadModule(
   {
     CMagpieModuleComObject * pModuleObject;
     IF_FAILED_RET(CMagpieModule::CreateObject(
-      *this, sModuleID, scriptLoader, lpszModuleSource, pModuleObject));
+      *this, sModuleID, scriptLoader, lpszModuleSource, aDecorateScript, pModuleObject));
 
     m_Modules[sModuleID] = pModuleObject;
     pRet = pModuleObject;
@@ -226,7 +229,7 @@ HRESULT CMagpieApplication::RunModule(
   ATLTRACE(_T("CMagpieApplication::RunModule %s\n"), lpszModuleID);
   // load the module
   CComPtr<CMagpieModuleComObject> module;
-  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, NULL, module.p));
+  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, NULL, TRUE, module.p));
 
   if (ppRet)
   {
@@ -247,7 +250,7 @@ HRESULT CMagpieApplication::RunScriptAsModule(
 {
   // load the module
   CComPtr<CMagpieModuleComObject> module;
-  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, lpszModuleSource, module.p));
+  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, lpszModuleSource, TRUE, module.p));
 
   if (ppRet)
   {
@@ -286,7 +289,7 @@ STDMETHODIMP CMagpieApplication::Init(const OLECHAR* lpszAppName)
 
   // init script engine
   // TODO: generate an appID somehow
-  HRESULT hr = m_ScriptEngine.Init(lpszAppName);
+  HRESULT hr = m_ScriptEngine.Init(lpszAppName, sCLSID_JScript);
   IF_FAILED_RET(hr);
 
   // prepare CommonJS objects
@@ -329,6 +332,7 @@ STDMETHODIMP CMagpieApplication::AddFilesystemScriptLoader(
 STDMETHODIMP CMagpieApplication::AddResourceScriptLoader(
   HANDLE_PTR hModule)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
   CComPtr<CMagpieResourceScriptLoaderComObject> loader;
   IF_FAILED_RET(CMagpieResourceScriptLoader::CreateObject(
     (HMODULE)hModule, loader.p));
@@ -350,6 +354,12 @@ STDMETHODIMP CMagpieApplication::Run(
 STDMETHODIMP CMagpieApplication::RunScript(
   const OLECHAR* lpszModuleID, const OLECHAR* lpszScript)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
+  if (9 == m_ScriptEngine.mJscriptVersion) {
+    CString s;
+    s.Format(_T("%s%s%s"), gJscript9ModuleWrapperIntro, lpszScript, gJscript9ModuleWrapperExtro);
+    return RunScriptAsModule(NULL, lpszModuleID, s);
+  }
   return RunScriptAsModule(NULL, lpszModuleID, lpszScript);
 }
 
@@ -358,6 +368,10 @@ STDMETHODIMP CMagpieApplication::RunScript(
 STDMETHODIMP CMagpieApplication::ExecuteScript(
   const OLECHAR* lpszScript, const OLECHAR* lpszModuleID)
 {
+  // see the bug mentioned in CMagpieActiveScript::RunModule
+  // currently this method is unused, if this changes handle
+  // this case!
+  ATLASSERT(9 != m_ScriptEngine.mJscriptVersion);
   CComPtr<IMagpieModule> pModule;
   const OLECHAR* lpsModID = (lpszModuleID)
     ? lpszModuleID
@@ -368,13 +382,16 @@ STDMETHODIMP CMagpieApplication::ExecuteScript(
 }
 
 //----------------------------------------------------------------------------
-//  ExecuteScript
+//  ExecuteGlobal
 STDMETHODIMP CMagpieApplication::ExecuteGlobal(
   const OLECHAR* lpszModuleID)
 {
   // load the module
   CComPtr<CMagpieModuleComObject> pModule;
-  IF_FAILED_RET(LoadModule(NULL, lpszModuleID, NULL, pModule.p));
+  // note that scripts executed in global context DON'T GET WRAPPED!
+  // 4th arg to LoadModule is FALSE for this reason.
+  // See stdafx.h, gJscript9ModuleWrapperIntro and CMagpieModule::Init()
+  IF_FAILED_RET(LoadModule(NULL, lpszModuleID, NULL, FALSE, pModule.p));
 
   return m_ScriptEngine.ExecuteGlobal((CMagpieModule*)pModule.p);
 }

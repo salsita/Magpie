@@ -16,18 +16,21 @@
 //----------------------------------------------------------------------------
 //  CTOR
 CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
-  m_Application(application)
+  mJscriptVersion(5), m_Application(application)
 {
 }
 
 //----------------------------------------------------------------------------
 //  Init
-HRESULT CMagpieActiveScript::Init(LPCOLESTR appId)
+HRESULT CMagpieActiveScript::Init(LPCOLESTR appId, const CLSID & aClsidScriptEngine)
 {
+  if (CLSID_JScript9 == aClsidScriptEngine) {
+    mJscriptVersion = 9;
+  }
 #ifdef SCRIPTDEBUG_
   IF_FAILED_RET(InitializeDebugInterface(appId));
 #endif
-  IF_FAILED_RET(LoadScriptEngine(CLSID_JScript));
+  IF_FAILED_RET(LoadScriptEngine(aClsidScriptEngine));
   IF_FAILED_RET(m_ScriptEngine->SetScriptState(SCRIPTSTATE_INITIALIZED));
   return S_OK;
 }
@@ -49,11 +52,10 @@ HRESULT CMagpieActiveScript::Shutdown()
 HRESULT CMagpieActiveScript::RunModule(
   CMagpieModule* pModule)
 {
-  CComPtr<IDispatch> pModuleRequireOb(pModule->GetRequire());
-  CComPtr<IDispatchEx> pModuleExportsOb;
-  IF_FAILED_RET(pModule->GetExports(&pModuleExportsOb));
-  if (!pModuleRequireOb || !pModuleExportsOb)
-  {
+  CComPtr<IDispatch> pModuleRequireObject(pModule->GetRequire());
+  CComPtr<IDispatchEx> pModuleExportsObject;
+  IF_FAILED_RET(pModule->GetExports(&pModuleExportsObject));
+  if (!pModuleRequireObject || !pModuleExportsObject) {
     return E_UNEXPECTED;
   }
 
@@ -66,32 +68,90 @@ HRESULT CMagpieActiveScript::RunModule(
   // add namespace for module
   IF_FAILED_RET(m_ScriptEngine->AddNamedItem(sModuleID, SCRIPTITEM_CODEONLY));
 
-  // dispatch for module's namespace
-  CIDispatchHelper script;
-  IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(sModuleID, &script));
-
-  // inject CommonJS objects
-  script.SetPropertyByRef(L"require", CComVariant(pModuleRequireOb));
-  script.SetPropertyByRef(L"exports", CComVariant(pModuleExportsOb));
-  script.SetPropertyByRef(L"module", CComVariant(pModule));
-
-  // now run the module
-  m_Application.EnterModule(sModuleID);
   HRESULT hr = E_FAIL;
-  DWORD_PTR dwSourceContext = 0;
-  // Note that the parent debug context is 0. Modules are in the debugger shown
-  // at top level.
-  hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID, sFilename, &dwSourceContext);
-  if (SUCCEEDED(hr))
-  {
-    // set module's source context
-    pModule->SetSourceContext(dwSourceContext);
-    m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
-  }
-  m_Application.ExitModule();
+  if (9 == mJscriptVersion) {
+    // jscript9 lacks module support. We have to handle this differently.
+    // This includes wrapping the module in a closure and loading it as an expression.
+    // The expression will "return" the closure which we will then execute with
+    // "require, module, exports" as arguments.
+    // load the module as an expression
+    m_Application.EnterModule(sModuleID);
 
-  return S_OK;
+    // Note that the parent debug context is 0. Modules are in the debugger shown
+    // at top level.
+    DWORD_PTR dwSourceContext = 0;
+
+    CComVariant scriptResult;
+    hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), NULL, sFilename, &dwSourceContext, &scriptResult);
+    if (SUCCEEDED(hr)) {
+      // set module's source context
+      pModule->SetSourceContext(dwSourceContext);
+      m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
+
+      // now get the closure of that module
+      hr = TYPE_E_TYPEMISMATCH;
+      if (VT_DISPATCH == scriptResult.vt && scriptResult.pdispVal) {
+        CIDispatchHelper moduleClosure(scriptResult.pdispVal);
+        ATLASSERT(moduleClosure);
+
+        // create a "this" context
+        CIDispatchHelper globalscript(m_ScriptGlobal);
+        CComPtr<IDispatch> contextObject;
+        hr = globalscript.CreateObject(L"Object", &contextObject);
+        if(SUCCEEDED(hr)) {
+          // call closure with arguments "require, module, exports"
+          // and created context
+          CComVariant args[4] = {contextObject, pModuleExportsObject, pModule, pModuleRequireObject};
+          DISPID didThis = DISPID_THIS;
+          DISPPARAMS params = {args, &didThis, _countof(args), 1};
+          CComVariant newExportsObject;
+          hr = moduleClosure.Call(NULL, &params, &newExportsObject);
+          // Put the new exports object to the module. This is required
+          // because the module might replace the exports object:
+          //   exports = {...};
+          // Normally the module would return, when asked for "exports", what
+          // the script dispatch (the named item) for this module will
+          // return. Since we don't have a script dispatch the module will
+          // return its own m_Exports. So set this here.
+          if (SUCCEEDED(hr) && VT_DISPATCH == newExportsObject.vt) {
+            pModule->put_exports(newExportsObject.pdispVal);
+          }
+        }
+      }
+    }
+    m_Application.ExitModule();
+    return hr;
+  }
+  else {
+    // dispatch for module's namespace
+    CIDispatchHelper script;
+    IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(sModuleID, &script));
+    // inject CommonJS objects
+    script.SetPropertyByRef(L"require", CComVariant(pModuleRequireObject));
+    script.SetPropertyByRef(L"exports", CComVariant(pModuleExportsObject));
+    script.SetPropertyByRef(L"module", CComVariant(pModule));
+
+    // run the module
+    m_Application.EnterModule(sModuleID);
+
+    // Note that the parent debug context is 0. Modules are in the debugger shown
+    // at top level.
+    DWORD_PTR dwSourceContext = 0;
+    HRESULT hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), sModuleID, sFilename, &dwSourceContext);
+    if (SUCCEEDED(hr)) {
+      // set module's source context
+      pModule->SetSourceContext(dwSourceContext);
+      m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
+    }
+
+    m_Application.ExitModule();
+    return hr;
+  }
+
+  // any other error
+  return hr;
 }
+
 
 //----------------------------------------------------------------------------
 //  ExecuteScriptForModule

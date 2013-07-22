@@ -141,3 +141,55 @@ STDMETHODIMP CMagpieResourceScriptLoader::GetModuleScript(
   return HRESULT_FROM_WIN32(::GetLastError());
 }
 
+//----------------------------------------------------------------------------
+//  GetModuleScriptDecorated
+STDMETHODIMP CMagpieResourceScriptLoader::GetModuleScriptDecorated(
+          const OLECHAR* lpszModuleID,
+          const OLECHAR* lpszScriptIntro,
+          const OLECHAR* lpszScriptExtro,
+          BSTR * pbsScript)
+{
+  ENSURE_RETVAL(pbsScript)
+  if (!m_hModule)
+  {
+    return E_UNEXPECTED;
+  }
+
+  // Adjust the module id. Forward slashes are not allowed in resource
+  // identifiers, so we use '|' instead.
+  CString sModuleIDPath(lpszModuleID);
+  sModuleIDPath.Replace(_T('/'), _T('|'));
+
+  HRSRC hRes = FindResource(
+    m_hModule, sModuleIDPath, MAKEINTRESOURCE(RT_HTML));
+  if (hRes)
+  {
+	  DWORD dwSize = SizeofResource(m_hModule, hRes);
+	  HGLOBAL hResLoad = LoadResource(m_hModule, hRes);
+	  if (hResLoad)
+	  {
+		  LPVOID lpResLock = LockResource(hResLoad);
+		  if (lpResLock)
+		  {
+        // intro and extro are wide strings, script input is assumed to be UTF8.
+        CW2A scriptIntro(lpszScriptIntro);
+        CW2A scriptExtro(lpszScriptExtro);
+        // all sizes are in bytes
+        DWORD introSize = (lpszScriptIntro) ? (DWORD)strlen(scriptIntro) : 0;
+        DWORD extroSize = (lpszScriptExtro) ? (DWORD)strlen(scriptExtro) : 0;
+        LPSTR buffer = (LPSTR)new BYTE[introSize + dwSize + extroSize + 1];
+        if (!buffer) {
+				  return E_OUTOFMEMORY;
+        }
+        memcpy(buffer, scriptIntro, introSize);
+			  memcpy(buffer + introSize, lpResLock, dwSize);
+        memcpy(buffer + introSize + dwSize, scriptExtro, extroSize);
+        buffer[introSize + dwSize + extroSize] = 0;
+        (*pbsScript) = SysAllocString(CA2WEX<4096>(buffer /*, CODEPAGE*/));
+        delete [] buffer;
+        return (*pbsScript) ? S_OK : E_OUTOFMEMORY;
+		  }
+	  }
+  }
+  return HRESULT_FROM_WIN32(::GetLastError());
+}

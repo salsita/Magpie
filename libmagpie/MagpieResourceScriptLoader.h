@@ -61,6 +61,11 @@ public:
   // IMagpieScriptLoader methods. See .idl for description.
   STDMETHOD(HasModuleScript)(const OLECHAR* lpszModuleID);
   STDMETHOD(GetModuleScript)(const OLECHAR* lpszModuleID, BSTR * pbsScript);
+  STDMETHOD(GetModuleScriptDecorated)(
+          const OLECHAR* lpszModuleID,
+          const OLECHAR* lpszScriptIntro,
+          const OLECHAR* lpszScriptExtro,
+          BSTR * pbsScript);
 
 private:
   // -------------------------------------------------------------------------

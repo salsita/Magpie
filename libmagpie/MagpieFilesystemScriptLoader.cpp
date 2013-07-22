@@ -150,6 +150,55 @@ STDMETHODIMP CMagpieFilesystemScriptLoader::GetModuleScript(
 }
 
 //----------------------------------------------------------------------------
+//  GetModuleScriptDecorated
+STDMETHODIMP CMagpieFilesystemScriptLoader::GetModuleScriptDecorated(
+          const OLECHAR* lpszModuleID,
+          const OLECHAR* lpszScriptIntro,
+          const OLECHAR* lpszScriptExtro,
+          BSTR * pbsScript)
+{
+  ENSURE_RETVAL(pbsScript)
+
+  CString sModulePath;
+  IF_FAILED_RET(ResolveModuleID(lpszModuleID, &sModulePath));
+
+  CAtlFile f;
+
+  IF_FAILED_RET(f.Create(
+    sModulePath, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING));
+
+  ULONGLONG nLen = 0;
+  HRESULT hr = E_FAIL;
+
+  IF_FAILED_RET(f.GetSize(nLen));
+  // limit script size to 4GB
+  if (nLen > 0x00000000ffffffff)
+	  return E_OUTOFMEMORY;
+
+  DWORD dwSize = (DWORD)(nLen & 0x00000000ffffffff);
+  // intro and extro are wide strings, script input is assumed to be UTF8.
+  CW2A scriptIntro(lpszScriptIntro);
+  CW2A scriptExtro(lpszScriptExtro);
+  // all sizes are in bytes
+  DWORD introSize = (lpszScriptIntro) ? (DWORD)strlen(scriptIntro) : 0;
+  DWORD extroSize = (lpszScriptExtro) ? (DWORD)strlen(scriptExtro) : 0;
+  CStringA sImpl;
+  LPSTR buffer = sImpl.GetBuffer(introSize + dwSize + extroSize);
+  if (!buffer) {
+	  return E_OUTOFMEMORY;
+  }
+  memcpy(buffer, scriptIntro, introSize);
+  hr = f.Read(buffer + introSize, dwSize);
+  memcpy(buffer + introSize + dwSize, scriptExtro, extroSize);
+  sImpl.ReleaseBuffer(introSize + dwSize + extroSize);
+  f.Close();
+  IF_FAILED_RET(hr);
+
+  (*pbsScript) = SysAllocString(CA2WEX<4096>(sImpl /*, CODEPAGE*/));
+  return (*pbsScript) ? S_OK : E_OUTOFMEMORY;
+}
+
+//----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 // IMagpieScriptLoader2 implementation
 //----------------------------------------------------------------------------
