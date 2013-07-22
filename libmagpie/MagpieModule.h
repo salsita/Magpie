@@ -54,6 +54,7 @@ public:
                               LPCOLESTR                   lpsModuleID,
                               IMagpieScriptLoader      *  pScriptLoader,
                               LPCOLESTR                   lpszScriptSource,
+                              BOOL                        aDecorateScript,
                               CMagpieModuleComObject  *&  pRet);
 
 public:
@@ -126,7 +127,8 @@ private:
 	HRESULT Init(CMagpieApplication & application,
                 LPCOLESTR             lpsModuleID,
                 IMagpieScriptLoader * pScriptLoader,
-                LPCOLESTR             lpszScriptSource);
+                LPCOLESTR             lpszScriptSource,
+                BOOL                  aDecorateScript);
 
 private:
   // -------------------------------------------------------------------------

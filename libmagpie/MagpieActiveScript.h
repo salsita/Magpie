@@ -63,7 +63,7 @@ public:
   // public methods
 
   // Init the script engine
-  HRESULT Init(LPCOLESTR appId);
+  HRESULT Init(LPCOLESTR appId, const CLSID & aClsidScriptEngine);
 
   // Shutdown script engine and cleanup
   HRESULT Shutdown();
@@ -95,6 +95,11 @@ public:
                          DWORD          dwReturnMask,
                          IUnknown   **  ppiunkItem,
                          ITypeInfo  **  ppti);
+
+public:
+  // -------------------------------------------------------------------------
+  // public members
+  int mJscriptVersion;
 
 private:
   // -------------------------------------------------------------------------

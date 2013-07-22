@@ -140,11 +140,13 @@ private:
   HRESULT LoadModule(CMagpieModule          *   pSrcModule,
                      LPCOLESTR                  lpszModuleID,
                      LPCOLESTR                  lpszModuleSource,
+                     BOOL                       aDecorateScript, 
                      CMagpieModuleComObject *&  pRet);
 
 private:
   // -------------------------------------------------------------------------
   // Private members.
+  static const CLSID sCLSID_JScript;
 
   // Script engine.
   CComObjectStackRefCtorArg<CMagpieActiveScript, CMagpieApplication>
