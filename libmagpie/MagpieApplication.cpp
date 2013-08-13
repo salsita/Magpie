@@ -288,8 +288,13 @@ STDMETHODIMP CMagpieApplication::Init(const OLECHAR* lpszAppName)
   Shutdown();
 
   // init script engine
-  // TODO: generate an appID somehow
+  // First choice: Whatever we have in sCLSID_JScript
   HRESULT hr = m_ScriptEngine.Init(lpszAppName, sCLSID_JScript);
+  if (FAILED(hr) && sCLSID_JScript == CLSID_JScript9) {
+    // Second choice: If this wasn't jscript9 - try old version
+    m_ScriptEngine.Shutdown();
+    hr = m_ScriptEngine.Init(lpszAppName, CLSID_JScript);
+  }
   IF_FAILED_RET(hr);
 
   // prepare CommonJS objects
