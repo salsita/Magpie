@@ -24,6 +24,7 @@ CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
 //  Init
 HRESULT CMagpieActiveScript::Init(LPCOLESTR appId, const CLSID & aClsidScriptEngine)
 {
+  mJscriptVersion = 5;
   if (CLSID_JScript9 == aClsidScriptEngine) {
     mJscriptVersion = 9;
   }

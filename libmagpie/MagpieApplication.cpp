@@ -229,7 +229,7 @@ HRESULT CMagpieApplication::RunModule(
   ATLTRACE(_T("CMagpieApplication::RunModule %s\n"), lpszModuleID);
   // load the module
   CComPtr<CMagpieModuleComObject> module;
-  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, NULL, TRUE, module.p));
+  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, NULL, 9 == m_ScriptEngine.mJscriptVersion, module.p));
 
   if (ppRet)
   {
@@ -250,7 +250,7 @@ HRESULT CMagpieApplication::RunScriptAsModule(
 {
   // load the module
   CComPtr<CMagpieModuleComObject> module;
-  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, lpszModuleSource, TRUE, module.p));
+  IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, lpszModuleSource, 9 == m_ScriptEngine.mJscriptVersion, module.p));
 
   if (ppRet)
   {

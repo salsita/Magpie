@@ -173,8 +173,6 @@ HRESULT CMagpieModule::GetExports(IDispatchEx ** ppDispEx)
     return E_NOINTERFACE;
   }
   CIDispatchHelper exp(vt.pdispVal);
-  CString msg;
-  hr = exp.Get<CString, VT_BSTR, BSTR>(L"msg", msg);
   return vt.pdispVal->QueryInterface(IID_IDispatchEx, (void**)ppDispEx);
 #endif // def USE_MODULES_EXPORT_OBJECT
 }
