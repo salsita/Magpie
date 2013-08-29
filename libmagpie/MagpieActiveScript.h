@@ -25,6 +25,7 @@ class CMagpieModule;
  */
 class ATL_NO_VTABLE CMagpieActiveScript :
 	public CComObjectRootEx<CComSingleThreadModel>,
+  public IMagpieObjectCreator,
   public CActiveScriptT<CMagpieActiveScript>
 #ifdef SCRIPTDEBUG_
   ,public CActiveScriptDebugT<CMagpieActiveScript>
@@ -47,6 +48,7 @@ public:
   // COM interface map
   BEGIN_COM_MAP(CMagpieActiveScript)
 	  COM_INTERFACE_ENTRY(IActiveScriptSite)
+    COM_INTERFACE_ENTRY(IMagpieObjectCreator)
 #ifdef SCRIPTDEBUG_
 	  COM_INTERFACE_ENTRY(IActiveScriptSiteDebug)
 #endif
@@ -61,6 +63,9 @@ public:
 public:
   // -------------------------------------------------------------------------
   // public methods
+
+  // IMagpieObjectCreator methods
+  STDMETHOD(createObject)(BSTR aObjectName, LPDISPATCH * aRetObject);
 
   // Init the script engine
   HRESULT Init(LPCOLESTR appId, const CLSID & aClsidScriptEngine);

@@ -20,6 +20,14 @@ CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
 {
 }
 
+STDMETHODIMP CMagpieActiveScript::createObject(BSTR aObjectName, LPDISPATCH * aRetObject)
+{
+  ENSURE_RETVAL(aRetObject)
+  CIDispatchHelper script;
+  IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(NULL, &script));
+  return script.CreateObject(aObjectName, aRetObject);
+}
+
 //----------------------------------------------------------------------------
 //  Init
 HRESULT CMagpieActiveScript::Init(LPCOLESTR appId, const CLSID & aClsidScriptEngine)

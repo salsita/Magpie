@@ -184,6 +184,21 @@ library MagpieLib
       "IMagpieConsole interface. The magpie console implements this interface."
     ),
 	  object,
+	  uuid(04E73040-64B5-4624-BA53-F0663137D32B),
+	  oleautomation,
+	  pointer_default(unique)
+  ]
+  interface IMagpieObjectCreator : IUnknown
+  {
+    HRESULT createObject([in] BSTR aObjectName, [out, retval] LPDISPATCH * aRetObject);
+  };
+
+/*==========================================================================*/
+  [
+	  helpstring(
+      "IMagpieConsole interface. The magpie console implements this interface."
+    ),
+	  object,
 	  uuid(5FCD00DD-F021-496a-9FD1-24B7195FF5D9),
 	  dual,
 	  nonextensible,
