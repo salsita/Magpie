@@ -175,7 +175,7 @@ public:
         : 0;
       // add script to debugging support
       Timpl* pImpl = (Timpl*)this;
-      IF_FAILED_RET(pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, lpszModuleLongName, dwSourceContext, dwParentSourceContext));
+      pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, lpszModuleLongName, dwSourceContext, dwParentSourceContext);
     }
 
     // parse script text
