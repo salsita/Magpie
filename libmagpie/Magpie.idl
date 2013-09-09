@@ -181,7 +181,7 @@ library MagpieLib
 /*==========================================================================*/
   [
 	  helpstring(
-      "IMagpieConsole interface. The magpie console implements this interface."
+      "IMagpieObjectCreator interface. Implemented by script site, used for creating JS objects."
     ),
 	  object,
 	  uuid(04E73040-64B5-4624-BA53-F0663137D32B),
