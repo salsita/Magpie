@@ -71,18 +71,14 @@ STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
 
 STDAPI CreateMagpieInstance(IMagpieApplication** ppRet)
 {
-  if (!ppRet)
-  {
+  if (!ppRet) {
     return E_POINTER;
   }
   (*ppRet) = NULL;
-  CComObject<CMagpieApplication> * pNewMagpie = NULL;
-  HRESULT hr = CComObject<CMagpieApplication>::CreateInstance(&pNewMagpie);
-  if (FAILED(hr))
-  {
+  CComPtr<IClassFactory> classFactory;
+  HRESULT hr = _AtlModule.DllGetClassObject(CLSID_MagpieApplication, IID_IClassFactory, (void**)&classFactory.p);
+  if (FAILED(hr)) {
     return hr;
   }
-  pNewMagpie->AddRef();
-  (*ppRet) = pNewMagpie;
-  return S_OK;
+  return classFactory->CreateInstance(NULL, IID_IMagpieApplication, (void**)ppRet);
 }

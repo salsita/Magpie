@@ -19,7 +19,7 @@ const CLSID CMagpieApplication::sCLSID_JScript = CLSID_JScript9;
 //----------------------------------------------------------------------------
 //  CTOR
 CMagpieApplication::CMagpieApplication() :
-  m_Console(*this),
+  m_Console(this, *this),
   m_ScriptEngine(*this),
   m_ConsolePtr(NULL)
 {
@@ -30,7 +30,8 @@ CMagpieApplication::CMagpieApplication() :
 HRESULT CMagpieApplication::FinalConstruct()
 {
   // prepare the aggregated pointer
-  m_Console.QueryInterface(IID_IUnknown, (void**)&m_ConsolePtr);
+//  m_ConsolePtr = &m_Console.m_contained;
+  //m_Console.m_contained.QueryInterface(IID_IUnknown, (void**)&m_ConsolePtr);
   return Init(L"Magpie");
 }
 
@@ -39,11 +40,13 @@ HRESULT CMagpieApplication::FinalConstruct()
 void CMagpieApplication::FinalRelease()
 {
   Shutdown();
+/*
   if (m_ConsolePtr)
   {
     m_ConsolePtr->Release();
     m_ConsolePtr = NULL;
   }
+*/
 }
 
 //----------------------------------------------------------------------------
@@ -266,14 +269,14 @@ HRESULT CMagpieApplication::RunScriptAsModule(
 void CMagpieApplication::EnterModule(
   LPCOLESTR lpszModuleID)
 {
-  m_Console.EnterModule(lpszModuleID);
+  m_Console.m_contained.EnterModule(lpszModuleID);
 }
 
 //----------------------------------------------------------------------------
 //  ExitModule
 void CMagpieApplication::ExitModule()
 {
-  m_Console.ExitModule();
+  m_Console.m_contained.ExitModule();
 }
 
 //----------------------------------------------------------------------------
@@ -300,9 +303,9 @@ STDMETHODIMP CMagpieApplication::Init(const OLECHAR* lpszAppName)
   // prepare CommonJS objects
 
   // console
-  IF_FAILED_RET(m_Console.Init());
+  IF_FAILED_RET(m_Console.m_contained.Init());
   IF_FAILED_RET(m_ScriptEngine.AddNamedItem(
-    L"console", &m_Console, SCRIPTITEM_ISPERSISTENT|SCRIPTITEM_ISVISIBLE));
+    L"console", &m_Console.m_contained, SCRIPTITEM_ISPERSISTENT|SCRIPTITEM_ISVISIBLE));
 
   return S_OK;
 }
@@ -446,7 +449,7 @@ STDMETHODIMP CMagpieApplication::Shutdown()
   // ...then modules...
   m_Modules.RemoveAll();
   // ...the console...
-  m_Console.Shutdown();
+  m_Console.m_contained.Shutdown();
   // ...then remove all script loaders...
   m_ScriptLoaders.RemoveAll();
   // ...the DISPID manager

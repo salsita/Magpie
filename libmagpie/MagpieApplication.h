@@ -50,7 +50,7 @@ public:
     // Since the console is hidden inside CMagpieApplication but we still want
     //  to allow advising to the console events offer the console's connection
     //  point as an aggregated interface.
-    COM_INTERFACE_ENTRY_AGGREGATE(IID_IConnectionPointContainer, m_ConsolePtr)
+    COM_INTERFACE_ENTRY_AGGREGATE(IID_IConnectionPointContainer, m_Console)
   END_COM_MAP()
 
 public:
@@ -153,7 +153,7 @@ private:
           m_ScriptEngine;
 
   // Basic console.
-  CComObjectStackRefCtorArg<CMagpieConsole, CMagpieApplication>
+  CComAggObjectRefCtorArg<CMagpieConsole, CMagpieApplication>
           m_Console;
 
   // A map of loaded modules. Key is the module ID.
