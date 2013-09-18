@@ -37,6 +37,7 @@ public:
   // COM standard stuff
   DECLARE_NO_REGISTRY();
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
+  DECLARE_ONLY_AGGREGATABLE(CMagpieConsole)
 
 public:
   // -------------------------------------------------------------------------

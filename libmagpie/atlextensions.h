@@ -75,6 +75,11 @@ public:
 
 };
 
+/*============================================================================
+ * template CComContainedObjectRefCtorArg
+ * This is the CComContainedObject version with CTOR argument.
+ */
+
 template <class Base, class CTORARG> //Base must be derived from CComObjectRoot
 class CComContainedObjectRefCtorArg : 
 	public Base
@@ -127,6 +132,11 @@ public:
 	}
 };
 
+
+/*============================================================================
+ * template CComAggObjectRefCtorArg
+ * This is the CComAggObject version with CTOR argument.
+ */
 
 //contained is the user's class that derives from CComObjectRoot and whatever
 //interfaces the user wants to support on the object
@@ -246,5 +256,30 @@ public:
 	}
 
 	CComContainedObjectRefCtorArg<contained, CTORARG> m_contained;
+};
+
+/*============================================================================
+ * class CComAggObjectRefCtorArgWrapper
+ *  A small wrapper around CComAggObjectRefCtorArg to make aggretation based
+ *  on CComAggObject easier.
+ *  The IUnknown pointer is the first member of this class, so this
+ *  instances of this class can be used directly in
+ *  COM_INTERFACE_ENTRY_AGGREGATE(...).
+ */
+template<class T, class CTORARG> class CComAggObjectRefCtorArgWrapper
+{
+public:
+  CComAggObjectRefCtorArgWrapper(void* pv, CTORARG & arg) :
+      m(pv, arg) { mUnk = &m; }
+
+  T * operator -> ()
+      { return &m.m_contained; };
+
+	template <class Q>
+	HRESULT STDMETHODCALLTYPE QueryInterface(Q** pp)
+      { return m.QueryInterface<Q>(pp); }
+
+  IUnknown        * mUnk; // only for aggregation
+  CComAggObjectRefCtorArg<T, CTORARG>  m;
 };
 

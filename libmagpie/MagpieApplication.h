@@ -51,6 +51,8 @@ public:
     //  to allow advising to the console events offer the console's connection
     //  point as an aggregated interface.
     COM_INTERFACE_ENTRY_AGGREGATE(IID_IConnectionPointContainer, m_Console)
+    // IDispatch of console also has to be exposed:
+    COM_INTERFACE_ENTRY_AGGREGATE(IID_IDispatch, m_Console)
   END_COM_MAP()
 
 public:
@@ -153,7 +155,7 @@ private:
           m_ScriptEngine;
 
   // Basic console.
-  CComAggObjectRefCtorArg<CMagpieConsole, CMagpieApplication>
+  CComAggObjectRefCtorArgWrapper<CMagpieConsole, CMagpieApplication>
           m_Console;
 
   // A map of loaded modules. Key is the module ID.
@@ -164,12 +166,6 @@ private:
   CAtlArray<CComPtr<IMagpieScriptLoader> >
           m_ScriptLoaders;
 
-  // Helper, pointing to the basic console. Used for aggregating
-  //  the console interface.
-  // For aggregation a raw pointer is required, using a safepointer
-  //  of any kind does not work.
-  IUnknown*
-          m_ConsolePtr;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(MagpieApplication), CMagpieApplication)
