@@ -74,3 +74,212 @@ public:
 	HRESULT m_hResFinalConstruct;
 
 };
+
+/*============================================================================
+ * template CComContainedObjectRefCtorArg
+ * This is the CComContainedObject version with CTOR argument.
+ */
+
+template <class Base, class CTORARG> //Base must be derived from CComObjectRoot
+class CComContainedObjectRefCtorArg : 
+	public Base
+{
+public:
+	typedef Base _BaseClass;
+	CComContainedObjectRefCtorArg(_In_opt_ void* pv, CTORARG & arg) : _BaseClass(arg)
+	{
+		m_pOuterUnknown = (IUnknown*)pv;
+	}
+#ifdef _ATL_DEBUG_INTERFACES
+	virtual ~CComContainedObjectRefCtorArg()
+	{
+		_AtlDebugInterfacesModule.DeleteNonAddRefThunk(_GetRawUnknown());
+		_AtlDebugInterfacesModule.DeleteNonAddRefThunk(m_pOuterUnknown);
+	}
+#endif
+
+	STDMETHOD_(ULONG, AddRef)() throw() 
+	{
+		return OuterAddRef();
+	}
+	STDMETHOD_(ULONG, Release)() throw() 
+	{
+		return OuterRelease();
+	}
+	STDMETHOD(QueryInterface)(
+		_In_ REFIID iid, 
+		_Deref_out_ void** ppvObject) throw()
+	{
+		return OuterQueryInterface(iid, ppvObject);
+	}
+	template <class Q>
+	HRESULT STDMETHODCALLTYPE QueryInterface(
+		_Deref_out_ Q** pp)
+	{
+		return QueryInterface(__uuidof(Q), (void**)pp);
+	}
+	//GetControllingUnknown may be virtual if the Base class has declared
+	//DECLARE_GET_CONTROLLING_UNKNOWN()
+	IUnknown* GetControllingUnknown() throw()
+	{
+#ifdef _ATL_DEBUG_INTERFACES
+		IUnknown* p;
+		_AtlDebugInterfacesModule.AddNonAddRefThunk(m_pOuterUnknown, _T("CComContainedObjectRefCtorArg"), &p);
+		return p;
+#else
+		return m_pOuterUnknown;
+#endif
+	}
+};
+
+
+/*============================================================================
+ * template CComAggObjectRefCtorArg
+ * This is the CComAggObject version with CTOR argument.
+ */
+
+//contained is the user's class that derives from CComObjectRoot and whatever
+//interfaces the user wants to support on the object
+template <class contained, class CTORARG>
+class CComAggObjectRefCtorArg :
+	public IUnknown,
+	public CComObjectRootEx< typename contained::_ThreadModel::ThreadModelNoCS >
+{
+public:
+	typedef contained _BaseClass;
+	CComAggObjectRefCtorArg(_In_opt_ void* pv, CTORARG & arg) : 
+		m_contained(pv, arg)
+	{
+		_pAtlModule->Lock();
+	}
+	HRESULT _AtlInitialConstruct()
+	{
+		HRESULT hr = m_contained._AtlInitialConstruct();
+		if (SUCCEEDED(hr))
+		{
+			hr = CComObjectRootEx< typename contained::_ThreadModel::ThreadModelNoCS >::_AtlInitialConstruct();
+		}
+		return hr;
+	}
+	//If you get a message that this call is ambiguous then you need to
+	// override it in your class and call each base class' version of this
+	HRESULT FinalConstruct()
+	{
+		CComObjectRootEx<contained::_ThreadModel::ThreadModelNoCS>::FinalConstruct();
+		return m_contained.FinalConstruct();
+	}
+	void FinalRelease()
+	{
+		CComObjectRootEx<contained::_ThreadModel::ThreadModelNoCS>::FinalRelease();
+		m_contained.FinalRelease();
+	}
+	// Set refcount to -(LONG_MAX/2) to protect destruction and 
+	// also catch mismatched Release in debug builds
+	virtual ~CComAggObjectRefCtorArg()
+	{
+		m_dwRef = -(LONG_MAX/2);
+		FinalRelease();
+#ifdef _ATL_DEBUG_INTERFACES
+		_AtlDebugInterfacesModule.DeleteNonAddRefThunk(this);
+#endif
+		_pAtlModule->Unlock();
+	}
+
+	STDMETHOD_(ULONG, AddRef)() 
+	{
+		return InternalAddRef();
+	}
+	STDMETHOD_(ULONG, Release)()
+	{
+		ULONG l = InternalRelease();
+		if (l == 0)
+			delete this;
+		return l;
+	}
+	STDMETHOD(QueryInterface)(
+		_In_ REFIID iid, 
+		_Deref_out_ void** ppvObject)
+	{
+		ATLASSERT(ppvObject != NULL);
+		if (ppvObject == NULL)
+			return E_POINTER;
+		*ppvObject = NULL;
+
+		HRESULT hRes = S_OK;
+		if (InlineIsEqualUnknown(iid))
+		{
+			*ppvObject = (void*)(IUnknown*)this;
+			AddRef();
+#ifdef _ATL_DEBUG_INTERFACES
+			_AtlDebugInterfacesModule.AddThunk((IUnknown**)ppvObject, (LPCTSTR)contained::_GetEntries()[-1].dw, iid);
+#endif // _ATL_DEBUG_INTERFACES
+		}
+		else
+			hRes = m_contained._InternalQueryInterface(iid, ppvObject);
+		return hRes;
+	}
+	template <class Q>
+	HRESULT STDMETHODCALLTYPE QueryInterface(_Deref_out_ Q** pp)
+	{
+		return QueryInterface(__uuidof(Q), (void**)pp);
+	}
+	static HRESULT WINAPI CreateInstance(
+		_Inout_opt_ LPUNKNOWN pUnkOuter, 
+		_Deref_out_ CComAggObjectRefCtorArg<contained, CTORARG>** pp)
+	{
+		ATLASSERT(pp != NULL);
+		if (pp == NULL)
+			return E_POINTER;
+		*pp = NULL;
+
+		HRESULT hRes = E_OUTOFMEMORY;
+		CComAggObjectRefCtorArg<contained>* p = NULL;
+		ATLTRY((p = new CComAggObjectRefCtorArg<contained, CTORARG>(pUnkOuter)))
+		if (p != NULL)
+		{
+			p->SetVoid(NULL);
+			p->InternalFinalConstructAddRef();
+			hRes = p->_AtlInitialConstruct();
+			if (SUCCEEDED(hRes))
+				hRes = p->FinalConstruct();
+			if (SUCCEEDED(hRes))
+				hRes = p->_AtlFinalConstruct();
+			p->InternalFinalConstructRelease();
+			if (hRes != S_OK)
+			{
+				delete p;
+				p = NULL;
+			}
+		}
+		*pp = p;
+		return hRes;
+	}
+
+	CComContainedObjectRefCtorArg<contained, CTORARG> m_contained;
+};
+
+/*============================================================================
+ * class CComAggObjectRefCtorArgWrapper
+ *  A small wrapper around CComAggObjectRefCtorArg to make aggretation based
+ *  on CComAggObject easier.
+ *  The IUnknown pointer is the first member of this class, so this
+ *  instances of this class can be used directly in
+ *  COM_INTERFACE_ENTRY_AGGREGATE(...).
+ */
+template<class T, class CTORARG> class CComAggObjectRefCtorArgWrapper
+{
+public:
+  CComAggObjectRefCtorArgWrapper(void* pv, CTORARG & arg) :
+      m(pv, arg) { mUnk = &m; }
+
+  T * operator -> ()
+      { return &m.m_contained; };
+
+	template <class Q>
+	HRESULT STDMETHODCALLTYPE QueryInterface(Q** pp)
+      { return m.QueryInterface<Q>(pp); }
+
+  IUnknown        * mUnk; // only for aggregation
+  CComAggObjectRefCtorArg<T, CTORARG>  m;
+};
+
