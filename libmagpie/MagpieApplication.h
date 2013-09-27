@@ -121,6 +121,7 @@ public:
   STDMETHOD(Run)(const OLECHAR* lpszModuleID);
   STDMETHOD(RunScript)(const OLECHAR* lpszModuleID, const OLECHAR* lpszScript);
   STDMETHOD(ExecuteScript)(const OLECHAR* lpszScript, const OLECHAR* lpszModuleID);
+  STDMETHOD(ExecuteScriptGlobal)(const OLECHAR* lpszScript);
   STDMETHOD(ExecuteGlobal)(const OLECHAR* lpszModuleID);
   STDMETHOD(AddExtension)(const OLECHAR* lpszExtensionName, IDispatch* pDispExtension);
   STDMETHOD(GetModuleObject)(const OLECHAR* lpszModuleID, IMagpieModuleRestricted ** ppRet);
@@ -142,7 +143,7 @@ private:
   HRESULT LoadModule(CMagpieModule          *   pSrcModule,
                      LPCOLESTR                  lpszModuleID,
                      LPCOLESTR                  lpszModuleSource,
-                     BOOL                       aDecorateScript, 
+                     BOOL                       aDecorateScript,
                      CMagpieModuleComObject *&  pRet);
 
 private:
