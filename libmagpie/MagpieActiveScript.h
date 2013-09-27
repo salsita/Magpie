@@ -81,6 +81,9 @@ public:
   // Runs a script source in the context of a certain module
   HRESULT ExecuteScriptForModule(const OLECHAR* lpszScript, CMagpieModule* pModule);
 
+  // Runs a script source in the global context
+  HRESULT ExecuteScriptGlobal(const OLECHAR* lpszScript);
+
   // Runs a module in the global context
   HRESULT ExecuteGlobal(CMagpieModule* pModule);
 

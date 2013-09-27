@@ -61,7 +61,7 @@ HRESULT CMagpieApplication::ResolveModuleID(
 
   HRESULT hr = E_FAIL;
   CString sSrcModuleID;
-  // if no source module is given id will be 
+  // if no source module is given id will be
   // relative to root (means sSrcModuleID will be empty)
   if (pSrcModule)
   {
@@ -157,7 +157,7 @@ HRESULT CMagpieApplication::LoadModule(
   CMagpieModule           *   pSrcModule,
   LPCOLESTR                   lpszModuleID,
   LPCOLESTR                   lpszModuleSource,
-  BOOL                        aDecorateScript, 
+  BOOL                        aDecorateScript,
   CMagpieModuleComObject  *&  pRet)
 {
   CString sModuleID;
@@ -378,6 +378,14 @@ STDMETHODIMP CMagpieApplication::ExecuteScript(
   // pModule will be null if not found
   m_Modules.Lookup(lpsModID, pModule);
   return m_ScriptEngine.ExecuteScriptForModule(lpszScript, (CMagpieModule*)pModule.p);
+}
+
+//----------------------------------------------------------------------------
+//  ExecuteGlobal
+STDMETHODIMP CMagpieApplication::ExecuteScriptGlobal(
+  const OLECHAR* lpszScript)
+{
+  return m_ScriptEngine.ExecuteScriptGlobal(lpszScript);
 }
 
 //----------------------------------------------------------------------------
