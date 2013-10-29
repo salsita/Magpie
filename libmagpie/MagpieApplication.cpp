@@ -340,6 +340,15 @@ STDMETHODIMP CMagpieApplication::AddResourceScriptLoader(
 }
 
 //----------------------------------------------------------------------------
+//  GetScriptDispatch
+STDMETHODIMP CMagpieApplication::GetScriptDispatch(
+  LPCOLESTR       pstrItemName,
+  IDispatch   **  ppdisp)
+{
+  return m_ScriptEngine.GetScriptDispatch(pstrItemName, ppdisp);
+}
+
+//----------------------------------------------------------------------------
 //  Run
 STDMETHODIMP CMagpieApplication::Run(
   const OLECHAR* lpszModuleID)
@@ -365,7 +374,7 @@ STDMETHODIMP CMagpieApplication::RunScript(
 //----------------------------------------------------------------------------
 //  ExecuteScript
 STDMETHODIMP CMagpieApplication::ExecuteScript(
-  const OLECHAR* lpszScript, const OLECHAR* lpszModuleID)
+  const OLECHAR* lpszScript, const OLECHAR* lpszModuleID, VARIANT *result)
 {
   // see the bug mentioned in CMagpieActiveScript::RunModule
   // currently this method is unused, if this changes handle
@@ -377,21 +386,21 @@ STDMETHODIMP CMagpieApplication::ExecuteScript(
     : L"";
   // pModule will be null if not found
   m_Modules.Lookup(lpsModID, pModule);
-  return m_ScriptEngine.ExecuteScriptForModule(lpszScript, (CMagpieModule*)pModule.p);
+  return m_ScriptEngine.ExecuteScriptForModule(lpszScript, (CMagpieModule*)pModule.p, result);
 }
 
 //----------------------------------------------------------------------------
 //  ExecuteGlobal
 STDMETHODIMP CMagpieApplication::ExecuteScriptGlobal(
-  const OLECHAR* lpszScript)
+  const OLECHAR* lpszScript, VARIANT *result)
 {
-  return m_ScriptEngine.ExecuteScriptGlobal(lpszScript);
+  return m_ScriptEngine.ExecuteScriptGlobal(lpszScript, result);
 }
 
 //----------------------------------------------------------------------------
 //  ExecuteGlobal
 STDMETHODIMP CMagpieApplication::ExecuteGlobal(
-  const OLECHAR* lpszModuleID)
+  const OLECHAR* lpszModuleID, VARIANT *result)
 {
   // load the module
   CComPtr<CMagpieModuleComObject> pModule;
@@ -400,7 +409,7 @@ STDMETHODIMP CMagpieApplication::ExecuteGlobal(
   // See stdafx.h, gJscript9ModuleWrapperIntro and CMagpieModule::Init()
   IF_FAILED_RET(LoadModule(NULL, lpszModuleID, NULL, FALSE, pModule.p));
 
-  return m_ScriptEngine.ExecuteGlobal((CMagpieModule*)pModule.p);
+  return m_ScriptEngine.ExecuteGlobal((CMagpieModule*)pModule.p, result);
 }
 
 

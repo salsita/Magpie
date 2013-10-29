@@ -120,14 +120,16 @@ public:
   STDMETHOD(AddResourceScriptLoader)(HANDLE_PTR hModule);
   STDMETHOD(Run)(const OLECHAR* lpszModuleID);
   STDMETHOD(RunScript)(const OLECHAR* lpszModuleID, const OLECHAR* lpszScript);
-  STDMETHOD(ExecuteScript)(const OLECHAR* lpszScript, const OLECHAR* lpszModuleID);
-  STDMETHOD(ExecuteScriptGlobal)(const OLECHAR* lpszScript);
-  STDMETHOD(ExecuteGlobal)(const OLECHAR* lpszModuleID);
+  STDMETHOD(ExecuteScript)(const OLECHAR* lpszScript, const OLECHAR* lpszModuleID, VARIANT *result);
+  STDMETHOD(ExecuteScriptGlobal)(const OLECHAR* lpszScript, VARIANT *result);
+  STDMETHOD(ExecuteGlobal)(const OLECHAR* lpszModuleID, VARIANT *result);
   STDMETHOD(AddExtension)(const OLECHAR* lpszExtensionName, IDispatch* pDispExtension);
   STDMETHOD(GetModuleObject)(const OLECHAR* lpszModuleID, IMagpieModuleRestricted ** ppRet);
   STDMETHOD(AddNamedItem)(const OLECHAR* lpszName, IDispatch * pDisp, ULONG ulFlags);
   STDMETHOD(Shutdown)();
 
+  // forwards to m_ScriptEngine
+  STDMETHOD(GetScriptDispatch)(LPCOLESTR pstrItemName, IDispatch **ppdisp);
 private:
   // -------------------------------------------------------------------------
   // Private methods.

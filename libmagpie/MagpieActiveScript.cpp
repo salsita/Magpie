@@ -166,7 +166,8 @@ HRESULT CMagpieActiveScript::RunModule(
 //  ExecuteScriptForModule
 HRESULT CMagpieActiveScript::ExecuteScriptForModule(
   const OLECHAR* lpszScript,
-  CMagpieModule* pModule)
+  CMagpieModule* pModule,
+  VARIANT* result)
 {
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   CString sModuleID;
@@ -185,7 +186,7 @@ HRESULT CMagpieActiveScript::ExecuteScriptForModule(
   m_Application.EnterModule(lpszModuleID);
   // run script
   HRESULT hr = E_FAIL;
-  hr = CActiveScriptT::AddScript(lpszScript, lpszModuleID, NULL, &dwParentSourceContext);
+  hr = CActiveScriptT::AddScript(lpszScript, lpszModuleID, NULL, &dwParentSourceContext, result);
   if (SUCCEEDED(hr))
   {
     m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
@@ -196,7 +197,7 @@ HRESULT CMagpieActiveScript::ExecuteScriptForModule(
 
 //----------------------------------------------------------------------------
 //  ExecuteScriptGlobal
-HRESULT CMagpieActiveScript::ExecuteScriptGlobal(const OLECHAR* lpszScript)
+HRESULT CMagpieActiveScript::ExecuteScriptGlobal(const OLECHAR* lpszScript, VARIANT* result)
 {
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   DWORD_PTR dwSourceContext = 0;
@@ -205,7 +206,7 @@ HRESULT CMagpieActiveScript::ExecuteScriptGlobal(const OLECHAR* lpszScript)
   m_Application.EnterModule(NULL);
   // run script
   HRESULT hr = E_FAIL;
-  hr = CActiveScriptT::AddScript(lpszScript, NULL, NULL, &dwSourceContext);
+  hr = CActiveScriptT::AddScript(lpszScript, NULL, NULL, &dwSourceContext, result);
   if (SUCCEEDED(hr))
   {
     m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
@@ -216,7 +217,7 @@ HRESULT CMagpieActiveScript::ExecuteScriptGlobal(const OLECHAR* lpszScript)
 
 //----------------------------------------------------------------------------
 //  ExecuteScriptForModule
-HRESULT CMagpieActiveScript::ExecuteGlobal(CMagpieModule* pModule)
+HRESULT CMagpieActiveScript::ExecuteGlobal(CMagpieModule* pModule, VARIANT* result)
 {
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   DWORD_PTR dwSourceContext = 0;
@@ -225,7 +226,7 @@ HRESULT CMagpieActiveScript::ExecuteGlobal(CMagpieModule* pModule)
   m_Application.EnterModule(NULL);
   // run script
   HRESULT hr = E_FAIL;
-  hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), NULL, NULL, &dwSourceContext);
+  hr = CActiveScriptT::AddScript(pModule->GetScriptSource(), NULL, NULL, &dwSourceContext, result);
   if (SUCCEEDED(hr))
   {
     m_ScriptEngine->SetScriptState(SCRIPTSTATE_CONNECTED);
