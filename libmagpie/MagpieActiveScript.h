@@ -79,13 +79,13 @@ public:
   HRESULT RunModule(CMagpieModule* pModule);
 
   // Runs a script source in the context of a certain module
-  HRESULT ExecuteScriptForModule(const OLECHAR* lpszScript, CMagpieModule* pModule);
+  HRESULT ExecuteScriptForModule(const OLECHAR* lpszScript, CMagpieModule* pModule, VARIANT* result);
 
   // Runs a script source in the global context
-  HRESULT ExecuteScriptGlobal(const OLECHAR* lpszScript);
+  HRESULT ExecuteScriptGlobal(const OLECHAR* lpszScript, VARIANT* result);
 
   // Runs a module in the global context
-  HRESULT ExecuteGlobal(CMagpieModule* pModule);
+  HRESULT ExecuteGlobal(CMagpieModule* pModule, VARIANT* result);
 
   // Simply adds a named item to the script engine. Used to inject objects
   //  into the global namespace of the script engine.

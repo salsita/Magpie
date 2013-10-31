@@ -79,19 +79,19 @@ interface IMagpieApplication : IUnknown
     "ExecuteScript method. Executes a script text passed in lpszScript in the context of"
     "lpszModuleID. This can be used to execute scripts generated on the fly."
   )]
-  HRESULT ExecuteScript([in, string] const OLECHAR* lpszScript, [in, string] const OLECHAR* lpszModuleID);
+  HRESULT ExecuteScript([in, string] const OLECHAR* lpszScript, [in, string] const OLECHAR* lpszModuleID, [out, retval] VARIANT *result);
 
   [helpstring(
     "ExecuteScript method. Executes a script text passed in lpszScript in the global context."
     "Can be used to execute scripts which need to bypass the require module mechanism"
   )]
-  HRESULT ExecuteScriptGlobal([in, string] const OLECHAR* lpszScript);
+  HRESULT ExecuteScriptGlobal([in, string] const OLECHAR* lpszScript, [out, retval] VARIANT *result);
 
   [helpstring(
     "ExecuteGlobal method. Executes a 'module' in the global context. Can be used to execute"
     "content of script files which need to bypass the require module mechanism"
   )]
-  HRESULT ExecuteGlobal([in, string] const OLECHAR* lpszModuleID);
+  HRESULT ExecuteGlobal([in, string] const OLECHAR* lpszModuleID, [out, retval] VARIANT *result);
 
   [helpstring(
     "AddExtension method. Adds an extension that is available as a global object"
@@ -113,6 +113,11 @@ interface IMagpieApplication : IUnknown
     "Shutdown method. Call to stop the script engine and cleanup everything."
   )]
   HRESULT Shutdown();
+
+  [helpstring(
+    "Gets script dispatch from script engine."
+  )]
+  HRESULT GetScriptDispatch(LPCOLESTR pstrItemName, IDispatch **ppdisp);
 
 };
 
