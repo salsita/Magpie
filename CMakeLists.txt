@@ -26,7 +26,6 @@ set(${PROJECT_NAME}_INC_DIRS
   ${Magpie_GEN_INC_DIR}
   ${libmagpie_INC_DIR}
   ${libmagpie_GEN_INC_DIR}
-  "${${PROJECT_NAME}_SOURCE_DIR}/include"
   )
 
 set(${PROJECT_NAME}_INC_DIRS ${${PROJECT_NAME}_INC_DIRS} PARENT_SCOPE)
