@@ -22,6 +22,10 @@ CMagpieActiveScript::CMagpieActiveScript(CMagpieApplication & application) :
 
 STDMETHODIMP CMagpieActiveScript::createObject(BSTR aObjectName, LPDISPATCH * aRetObject)
 {
+  ATLASSERT(m_ScriptEngine);
+  if (!m_ScriptEngine) {
+    return E_UNEXPECTED;
+  }
   ENSURE_RETVAL(aRetObject)
   CIDispatchHelper script;
   IF_FAILED_RET(m_ScriptEngine->GetScriptDispatch(NULL, &script));
@@ -61,6 +65,14 @@ HRESULT CMagpieActiveScript::Shutdown()
 HRESULT CMagpieActiveScript::RunModule(
   CMagpieModule* pModule)
 {
+  ATLASSERT(m_ScriptEngine);
+  ATLASSERT(pModule);
+  if (!m_ScriptEngine) {
+    return E_UNEXPECTED;
+  }
+  if (!pModule) {
+    return E_INVALIDARG;
+  }
   CComPtr<IDispatch> pModuleRequireObject(pModule->GetRequire());
   CComPtr<IDispatchEx> pModuleExportsObject;
   IF_FAILED_RET(pModule->GetExports(&pModuleExportsObject));
@@ -169,6 +181,10 @@ HRESULT CMagpieActiveScript::ExecuteScriptForModule(
   CMagpieModule* pModule,
   VARIANT* result)
 {
+  ATLASSERT(m_ScriptEngine);
+  if (!m_ScriptEngine) {
+    return E_UNEXPECTED;
+  }
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   CString sModuleID;
   LPCTSTR lpszModuleID = NULL;
@@ -199,6 +215,10 @@ HRESULT CMagpieActiveScript::ExecuteScriptForModule(
 //  ExecuteScriptGlobal
 HRESULT CMagpieActiveScript::ExecuteScriptGlobal(const OLECHAR* lpszScript, VARIANT* result)
 {
+  ATLASSERT(m_ScriptEngine);
+  if (!m_ScriptEngine) {
+    return E_UNEXPECTED;
+  }
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   DWORD_PTR dwSourceContext = 0;
 
@@ -219,6 +239,10 @@ HRESULT CMagpieActiveScript::ExecuteScriptGlobal(const OLECHAR* lpszScript, VARI
 //  ExecuteScriptForModule
 HRESULT CMagpieActiveScript::ExecuteGlobal(CMagpieModule* pModule, VARIANT* result)
 {
+  ATLASSERT(m_ScriptEngine);
+  if (!m_ScriptEngine) {
+    return E_UNEXPECTED;
+  }
   m_ScriptEngine->SetScriptState(SCRIPTSTATE_DISCONNECTED);
   DWORD_PTR dwSourceContext = 0;
 
@@ -242,8 +266,8 @@ HRESULT CMagpieActiveScript::AddNamedItem(
   IDispatch * pDisp,
   DWORD       dwFlags)
 {
-  if (!m_ScriptEngine)
-  {
+  ATLASSERT(m_ScriptEngine);
+  if (!m_ScriptEngine) {
     return E_UNEXPECTED;
   }
   if (m_NamedItems.Lookup(pstrName))
