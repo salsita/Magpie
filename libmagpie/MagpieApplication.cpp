@@ -226,10 +226,6 @@ HRESULT CMagpieApplication::RunModule(
   LPCOLESTR                   lpszModuleID,
   CMagpieModuleComObject  **  ppRet)
 {
-  ATLASSERT(pSrcModule);
-  if (!pSrcModule) {
-    return E_INVALIDARG;
-  }
   ATLTRACE(_T("CMagpieApplication::RunModule %s\n"), lpszModuleID);
   // load the module
   CComPtr<CMagpieModuleComObject> module;
@@ -252,10 +248,6 @@ HRESULT CMagpieApplication::RunScriptAsModule(
   LPCOLESTR                   lpszModuleSource,
   CMagpieModuleComObject  **  ppRet)
 {
-  ATLASSERT(pSrcModule);
-  if (!pSrcModule) {
-    return E_INVALIDARG;
-  }
   // load the module
   CComPtr<CMagpieModuleComObject> module;
   IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, lpszModuleSource, 9 == m_ScriptEngine.mJscriptVersion, module.p));
