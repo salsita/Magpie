@@ -45,10 +45,6 @@ HRESULT CMagpieApplication::ResolveModuleID(
   LPCOLESTR       lpszModuleID,
   CString       & sAbsoluteModuleID)
 {
-  ATLASSERT(pSrcModule);
-  if (!pSrcModule) {
-    return E_INVALIDARG;
-  }
   if (!lpszModuleID || !_tcslen(lpszModuleID))
   {
     // empty id? no way!
@@ -164,10 +160,6 @@ HRESULT CMagpieApplication::LoadModule(
   BOOL                        aDecorateScript,
   CMagpieModuleComObject  *&  pRet)
 {
-  ATLASSERT(pSrcModule);
-  if (!pSrcModule) {
-    return E_INVALIDARG;
-  }
   CString sModuleID;
   IF_FAILED_RET(ResolveModuleID(
     pSrcModule, lpszModuleID, sModuleID));
