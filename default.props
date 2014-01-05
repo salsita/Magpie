@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <BuildFolder>$(SolutionDir)deploy\</BuildFolder>
+    <WTLIncludeFolder>C:\Program Files\WTL\Include</WTLIncludeFolder>
+    <GTestIncludeFolder>$(VisualStudioDir)\Projects\gtest\include</GTestIncludeFolder>
+    <GTest32LibFolder>$(VisualStudioDir)\Projects\gtest\lib\$(Configuration)_$(PlatformName)</GTest32LibFolder>
+    <GMockIncludeFolder>$(VisualStudioDir)\Projects\gtest\include</GMockIncludeFolder>
+    <GMock32LibFolder>$(GTest32LibFolder)</GMock32LibFolder>
+    <BHOHelperIncludeFolder>$(VisualStudioDir)\Projects\libbhohelper\code\include</BHOHelperIncludeFolder>
+    <BHOHelperLibFolder>$(VisualStudioDir)\Projects\libbhohelper\deploy\$(Configuration)_$(PlatformName)</BHOHelperLibFolder>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(BuildFolder)$(Configuration)_$(PlatformName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir>$(BuildFolder)intermediate\$(ProjectName)\$(Configuration)_$(PlatformName)\</IntDir>
+    <IncludePath>$(WTLIncludeFolder);$(BHOHelperIncludeFolder);$(GTestIncludeFolder);$(GMockIncludeFolder);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalLibraryDirectories>$(BHOHelperLibFolder);$(GTest32LibFolder);$(GMock32LibFolder);$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="BuildFolder">
+      <Value>$(BuildFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="WTLIncludeFolder">
+      <Value>$(WTLIncludeFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GTestIncludeFolder">
+      <Value>$(GTestIncludeFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GTest32LibFolder">
+      <Value>$(GTest32LibFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GMockIncludeFolder">
+      <Value>$(GMockIncludeFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GMock32LibFolder">
+      <Value>$(GMock32LibFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BHOHelperIncludeFolder">
+      <Value>$(BHOHelperIncludeFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BHOHelperLibFolder">
+      <Value>$(BHOHelperLibFolder)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

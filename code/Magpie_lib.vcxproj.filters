@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieFilesystemScriptLoader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieModule.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieModuleExports.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieRequire.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieResourceScriptLoader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\Misc.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\_IMagpieLoggerEvents_CP.H">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ActiveScriptDebugT.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\ActiveScriptT.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\atlextensions.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\DispExIdManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieActiveScript.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieApplication.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lib\MagpieConsole.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="include\targetver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\lib\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieFilesystemScriptLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieModule.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieModuleExports.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieRequire.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieResourceScriptLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\Misc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\DispExIdManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieActiveScript.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieApplication.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib\MagpieConsole.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{C109A62C-FD5D-46B2-BAE1-35566348AC39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{D5816CFB-DA2A-468B-A330-0B16639B061E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="src\Magpie.idl">
+      <Filter>src</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>
