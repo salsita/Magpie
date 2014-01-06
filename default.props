@@ -5,9 +5,9 @@
     <BuildFolder>$(SolutionDir)deploy\</BuildFolder>
     <WTLIncludeFolder>C:\Program Files\WTL\Include</WTLIncludeFolder>
     <GTestIncludeFolder>$(VisualStudioDir)\Projects\gtest\include</GTestIncludeFolder>
-    <GTest32LibFolder>$(VisualStudioDir)\Projects\gtest\lib\$(Configuration)_$(PlatformName)</GTest32LibFolder>
+    <GTestLibFolder>$(VisualStudioDir)\Projects\gtest\lib\$(Configuration)_$(PlatformName)</GTestLibFolder>
     <GMockIncludeFolder>$(VisualStudioDir)\Projects\gtest\include</GMockIncludeFolder>
-    <GMock32LibFolder>$(GTest32LibFolder)</GMock32LibFolder>
+    <GMockLibFolder>$(GTestLibFolder)</GMockLibFolder>
     <BHOHelperIncludeFolder>$(VisualStudioDir)\Projects\libbhohelper\code\include</BHOHelperIncludeFolder>
     <BHOHelperLibFolder>$(VisualStudioDir)\Projects\libbhohelper\deploy\$(Configuration)_$(PlatformName)</BHOHelperLibFolder>
   </PropertyGroup>
@@ -20,7 +20,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>$(BHOHelperLibFolder);$(GTest32LibFolder);$(GMock32LibFolder);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BHOHelperLibFolder);$(GTestLibFolder);$(GMockLibFolder);$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -33,14 +33,14 @@
     <BuildMacro Include="GTestIncludeFolder">
       <Value>$(GTestIncludeFolder)</Value>
     </BuildMacro>
-    <BuildMacro Include="GTest32LibFolder">
-      <Value>$(GTest32LibFolder)</Value>
+    <BuildMacro Include="GTestLibFolder">
+      <Value>$(GTestLibFolder)</Value>
     </BuildMacro>
     <BuildMacro Include="GMockIncludeFolder">
       <Value>$(GMockIncludeFolder)</Value>
     </BuildMacro>
-    <BuildMacro Include="GMock32LibFolder">
-      <Value>$(GMock32LibFolder)</Value>
+    <BuildMacro Include="GMockLibFolder">
+      <Value>$(GMockLibFolder)</Value>
     </BuildMacro>
     <BuildMacro Include="BHOHelperIncludeFolder">
       <Value>$(BHOHelperIncludeFolder)</Value>
