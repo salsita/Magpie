@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.10) #required for extended generator expressions in add_custom_command
 project (libmagpie)
 
-set(CMAKE_CONFIGURATION_TYPES Debug Release )
+set(CMAKE_CONFIGURATION_TYPES Debug Release RelWithDebInfo )
 set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Reset the configurations to those we need" FORCE)
 
 #Variables describing project layout
@@ -112,7 +112,7 @@ endif (${CMAKE_CL_64})
 
 set(${PROJECT_NAME}_MIDL_ARGUMENTS
                      "${${PROJECT_NAME}_IDL_FILE}"
-                     /D $<$<CONFIG:Debug>:"_DEBUG"> $<$<CONFIG:Release>:"NDEBUG">
+                     /D $<$<CONFIG:Debug>:"_DEBUG"> $<$<CONFIG:Release>:"NDEBUG"> $<$<CONFIG:RelWithDebInfo>:"NDEBUG">
                      /D "MODULES_HAVE_EXPORT_PROPERTY"
                      /nologo
                      /char signed
