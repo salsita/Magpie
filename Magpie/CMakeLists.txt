@@ -88,7 +88,7 @@ set_source_files_properties(
 # MIDL
 set(${PROJECT_NAME}_MIDL_ARGUMENTS
                      "${${PROJECT_NAME}_IDL_FILE}"
-                     /D $<$<CONFIG:Debug>:"_DEBUG"> $<$<CONFIG:Release>:"NDEBUG">
+                     /D $<$<CONFIG:Debug>:"_DEBUG"> $<$<CONFIG:Release>:"NDEBUG"> $<$<CONFIG:RelWithDebInfo>:"NDEBUG">
                      /D "MODULES_HAVE_EXPORT_PROPERTY"
                      /nologo
                      /char signed
