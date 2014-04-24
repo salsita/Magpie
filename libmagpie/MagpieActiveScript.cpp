@@ -40,9 +40,9 @@ HRESULT CMagpieActiveScript::Init(LPCOLESTR appId, const CLSID & aClsidScriptEng
   if (CLSID_JScript9 == aClsidScriptEngine) {
     mJscriptVersion = 9;
   }
-#ifdef SCRIPTDEBUG_
-  IF_FAILED_RET(InitializeDebugInterface(appId));
-#endif
+  if (nullptr != appId) {
+    IF_FAILED_RET(InitializeDebugInterface(appId));
+  }
   IF_FAILED_RET(LoadScriptEngine(aClsidScriptEngine));
   IF_FAILED_RET(m_ScriptEngine->SetScriptState(SCRIPTSTATE_INITIALIZED));
   return S_OK;
@@ -53,9 +53,7 @@ HRESULT CMagpieActiveScript::Init(LPCOLESTR appId, const CLSID & aClsidScriptEng
 HRESULT CMagpieActiveScript::Shutdown()
 {
   UnloadScriptEngine();
-#ifdef SCRIPTDEBUG_
   UninitializeDebugInterface();
-#endif
   m_NamedItems.RemoveAll();
   return S_OK;
 }

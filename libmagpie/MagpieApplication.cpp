@@ -28,7 +28,7 @@ CMagpieApplication::CMagpieApplication() :
 //  FinalConstruct
 HRESULT CMagpieApplication::FinalConstruct()
 {
-  return Init(L"Magpie");
+  return Init(nullptr);
 }
 
 //----------------------------------------------------------------------------

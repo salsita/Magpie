@@ -29,6 +29,7 @@ interface IMagpieApplication : IUnknown
   [helpstring(
     "Init method. Must be called first to initialize everything."
     "lpszAppName is the name that appears in the debugger for this instance."
+    "Passing NULL disables the debugger."
   )]
   HRESULT Init([in, string] const OLECHAR* lpszAppName);
 

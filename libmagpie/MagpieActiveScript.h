@@ -26,10 +26,8 @@ class CMagpieModule;
 class ATL_NO_VTABLE CMagpieActiveScript :
 	public CComObjectRootEx<CComSingleThreadModel>,
   public IMagpieObjectCreator,
-  public CActiveScriptT<CMagpieActiveScript>
-#ifdef SCRIPTDEBUG_
-  ,public CActiveScriptDebugT<CMagpieActiveScript>
-#endif
+  public CActiveScriptT<CMagpieActiveScript>,
+  public CActiveScriptDebugT<CMagpieActiveScript>
 {
 public:
   // -------------------------------------------------------------------------
@@ -49,9 +47,7 @@ public:
   BEGIN_COM_MAP(CMagpieActiveScript)
 	  COM_INTERFACE_ENTRY(IActiveScriptSite)
     COM_INTERFACE_ENTRY(IMagpieObjectCreator)
-#ifdef SCRIPTDEBUG_
 	  COM_INTERFACE_ENTRY(IActiveScriptSiteDebug)
-#endif
   END_COM_MAP()
 
 public:
