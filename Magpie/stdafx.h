@@ -32,11 +32,6 @@ using namespace Misc;
 #include "libbhohelper.h"
 using namespace LIB_BhoHelper;
 
-#ifdef _DEBUG
-// enable script debugger
-#define SCRIPTDEBUG_
-#endif
-
 // some shortcut macros for error checking
 
 #ifdef _DEBUG

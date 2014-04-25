@@ -37,11 +37,6 @@ using namespace LIB_BhoHelper;
 extern LPCOLESTR gJscript9ModuleWrapperIntro;
 extern LPCOLESTR gJscript9ModuleWrapperExtro;
 
-#ifdef _DEBUG
-// enable script debugger
-#define SCRIPTDEBUG_
-#endif
-
 // some shortcut macros for error checking
 
 #ifdef _DEBUG

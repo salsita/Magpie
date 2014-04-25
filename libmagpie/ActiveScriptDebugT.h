@@ -30,6 +30,9 @@ public:
   //  InitializeDebugInterface
   HRESULT InitializeDebugInterface(LPCOLESTR appId)
   {
+    if (nullptr == appId) {
+      return E_INVALIDARG;
+    }
     if (FAILED(CoCreateInstance(CLSID_ProcessDebugManager, NULL, CLSCTX_INPROC_SERVER|CLSCTX_LOCAL_SERVER,
       IID_IProcessDebugManager, (void**)&m_debugManager)))
     {

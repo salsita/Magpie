@@ -168,15 +168,13 @@ public:
     }
 
     DWORD_PTR dwSourceContext = 0;
-    __if_exists(Timpl::AddScriptForDebug)
-    {
-      DWORD_PTR dwParentSourceContext = (pdwSourceContext)
-        ? (*pdwSourceContext)
-        : 0;
-      // add script to debugging support
-      Timpl* pImpl = (Timpl*)this;
-      pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, lpszModuleLongName, dwSourceContext, dwParentSourceContext);
-    }
+    DWORD_PTR dwParentSourceContext = (pdwSourceContext)
+      ? (*pdwSourceContext)
+      : 0;
+    // add script to debugging support
+    Timpl* pImpl = (Timpl*)this;
+    // no return value checking, result will be E_UNEXPECTED when debugger is not initialized
+    pImpl->AddScriptForDebug(m_ScriptEngine, lpszSource, lpszModuleName, lpszModuleLongName, dwSourceContext, dwParentSourceContext);
 
     // parse script text
     DWORD flags = SCRIPTTEXT_HOSTMANAGESSOURCE|SCRIPTTEXT_ISVISIBLE;
