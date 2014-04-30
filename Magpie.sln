@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Magpie_lib", "code\Magpie_lib.vcxproj", "{54460CE3-260F-4D7A-8341-9DB161C0566E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Magpie_tests", "tests\Magpie_tests.vcxproj", "{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9} = {BAE2D05A-2136-473D-A854-9AC31E5691A9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Magpie", "code\Magpie.vcxproj", "{BAE2D05A-2136-473D-A854-9AC31E5691A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{54460CE3-260F-4D7A-8341-9DB161C0566E} = {54460CE3-260F-4D7A-8341-9DB161C0566E}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Debug|Win32.Build.0 = Debug|Win32
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Debug|x64.ActiveCfg = Debug|x64
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Debug|x64.Build.0 = Debug|x64
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Release|Win32.ActiveCfg = Release|Win32
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Release|Win32.Build.0 = Release|Win32
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Release|x64.ActiveCfg = Release|x64
+		{54460CE3-260F-4D7A-8341-9DB161C0566E}.Release|x64.Build.0 = Release|x64
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Debug|Win32.Build.0 = Debug|Win32
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Debug|x64.ActiveCfg = Debug|x64
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Debug|x64.Build.0 = Debug|x64
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Release|Win32.ActiveCfg = Release|Win32
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Release|Win32.Build.0 = Release|Win32
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Release|x64.ActiveCfg = Release|x64
+		{DBC14EBB-D248-4FBE-A2D3-0785AF114A3A}.Release|x64.Build.0 = Release|x64
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Debug|Win32.Build.0 = Debug|Win32
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Debug|x64.ActiveCfg = Debug|x64
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Debug|x64.Build.0 = Debug|x64
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Release|Win32.ActiveCfg = Release|Win32
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Release|Win32.Build.0 = Release|Win32
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Release|x64.ActiveCfg = Release|x64
+		{BAE2D05A-2136-473D-A854-9AC31E5691A9}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
