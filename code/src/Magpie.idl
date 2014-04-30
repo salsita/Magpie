@@ -1,0 +1,389 @@
+/****************************************************************************
+ * Magpie.idl : IDL source for Magpie
+ * Copyright 2012 Arne Seib.
+ * Author: Arne Seib <kontakt@seiberspace.de>
+ ****************************************************************************/
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+// forwards
+interface IMagpieScriptLoader;
+interface IMagpieModuleRestricted;
+
+/*==========================================================================*/
+[
+	helpstring(
+    "IMagpieApplication Interface. This is the interface "
+    "for handling a magpie instance. Use it to initialize, "
+    "run and shutdown the instance. "
+    "It also offeres an aggregated IConnectionPointContainer "
+    "interface for attaching a console implementation."
+  ),
+	object,
+	uuid(EB490C81-7F44-42a7-8D45-02EFA8B8277E),
+	pointer_default(unique)
+]
+interface IMagpieApplication : IUnknown
+{
+  [helpstring(
+    "Init method. Must be called first to initialize everything."
+    "lpszAppName is the name that appears in the debugger for this instance."
+  )]
+  HRESULT Init([in, string] const OLECHAR* lpszAppName);
+
+  [helpstring(
+    "AddScriptLoader. Adds a script source."
+    "When a module is required all known script sources are asked for the"
+    "sources for the requested module. The first one in the list that can"
+    "deliver a script wins."
+    "This is the low level method if you want to add a custom script loader."
+    "In case you want to use scripts from the filesystem or from resources"
+    "you can use the AddFilesystemScriptLoader or AddResourceScriptLoader"
+    "methods."
+  )]
+  HRESULT AddScriptLoader(IMagpieScriptLoader * pLoader);
+
+  [helpstring(
+    "AddFilesystemScriptLoader. Adds a filesystem path as a script source."
+    "This method creates an instance of the built-in script loader for files."
+    "NOTE: The built-in loader assumes that the files are saved as codepage"
+    "CP_ACP."
+  )]
+  HRESULT AddFilesystemScriptLoader([in, string] const OLECHAR* lpszRootPath);
+
+  [helpstring(
+    "AddResourceScriptLoader. Adds a resource DLL or EXE file as a script"
+    "source."
+    "This method creates an instance of the built-in script loader for"
+    "resources. NOTE: The built-in loader assumes that the resources are"
+    "stored as type RT_HTML and with codepage CP_ACP."
+    "NOTE: Forward slashes are not allowed in resource identifiers, so"
+    "use '|' instead."
+  )]
+  HRESULT AddResourceScriptLoader([in] HANDLE_PTR hModule);
+
+  [helpstring(
+    "Run method. Pass the module ID of your main script in "
+    "lpszModuleID."
+  )]
+  HRESULT Run([in, string] const OLECHAR* lpszModuleID);
+
+  [helpstring(
+    "RunScript method. Runs a script text passed in lpszScript as module"
+    "lpszModuleID."
+  )]
+  HRESULT RunScript([in, string] const OLECHAR* lpszModuleID, [in, string] const OLECHAR* lpszScript);
+
+  [helpstring(
+    "ExecuteScript method. Executes a script text passed in lpszScript in the context of"
+    "lpszModuleID. This can be used to execute scripts generated on the fly."
+  )]
+  HRESULT ExecuteScript([in, string] const OLECHAR* lpszScript, [in, string] const OLECHAR* lpszModuleID, [out, retval] VARIANT *result);
+
+  [helpstring(
+    "ExecuteScript method. Executes a script text passed in lpszScript in the global context."
+    "Can be used to execute scripts which need to bypass the require module mechanism"
+  )]
+  HRESULT ExecuteScriptGlobal([in, string] const OLECHAR* lpszScript, [out, retval] VARIANT *result);
+
+  [helpstring(
+    "ExecuteGlobal method. Executes a 'module' in the global context. Can be used to execute"
+    "content of script files which need to bypass the require module mechanism"
+  )]
+  HRESULT ExecuteGlobal([in, string] const OLECHAR* lpszModuleID, [out, retval] VARIANT *result);
+
+  [helpstring(
+    "AddExtension method. Adds an extension that is available as a global object"
+    "(like require or console)."
+  )]
+  HRESULT AddExtension([in, string] const OLECHAR* lpszExtensionName, [in] IDispatch* pDispExtension);
+
+  [helpstring(
+    "TODO."
+  )]
+  HRESULT GetModuleObject([in, string] const OLECHAR* lpszModuleID, [out, retval] IMagpieModuleRestricted ** ppRet);
+
+  [helpstring(
+    "TODO."
+  )]
+  HRESULT AddNamedItem([in, string] const OLECHAR* lpszName, [in] IDispatch * pDisp, [in] ULONG ulFlags);
+
+  [helpstring(
+    "Shutdown method. Call to stop the script engine and cleanup everything."
+  )]
+  HRESULT Shutdown();
+
+  [helpstring(
+    "Gets script dispatch from script engine."
+  )]
+  HRESULT GetScriptDispatch(LPCOLESTR pstrItemName, IDispatch **ppdisp);
+
+};
+
+/*==========================================================================*/
+[
+	helpstring("Magpie 1.0 Type Library"),
+	uuid(927FEA3E-303E-44d3-965F-95360C16BA45),
+	version(1.0)
+]
+library MagpieLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+/*==========================================================================*/
+  [
+	  helpstring(
+      "Enum LogFacility. All known log facilities. Can be used "
+      "by a _IMagpieLoggerEvents implementation for internal processing."
+    ),
+	  uuid(C1425F75-242A-47db-AAC1-97ED8CF88AD9)
+  ]
+  // !IMPORTANT!: These values have to match the corresponding dispatch IDs in
+  // _IMagpieLoggerEvents and IMagpieConsole
+  enum LogFacility
+  {
+    LT_LOG    = 1,
+    LT_DEBUG  = 2,
+    LT_INFO   = 3,
+    LT_WARN   = 4,
+    LT_ERROR  = 5
+  };
+
+/*==========================================================================*/
+  [
+	  helpstring(
+      "_IMagpieLoggerEvents event interface. Implement this interface to "
+      "receive log events."
+    ),
+	  uuid(C9FC6B1C-26FD-4af7-8F5F-497A7EA4FD89)
+  ]
+  dispinterface _IMagpieLoggerEvents
+  {
+    properties:
+    methods:
+    [id(1), helpstring(
+      "Method OnLog"
+    )]
+    void OnLog([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
+
+    [id(2), helpstring(
+      "Method OnDebug"
+    )]
+    void OnDebug([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
+
+    [id(3), helpstring(
+      "Method OnInfo"
+    )]
+    void OnInfo([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
+
+    [id(4), helpstring(
+      "Method OnWarn"
+    )]
+    void OnWarn([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
+
+    [id(5), helpstring(
+      "Method OnError"
+    )]
+    void OnError([in] BSTR bsModuleID, [in] SAFEARRAY* pVals);
+  };
+
+/*==========================================================================*/
+  [
+	  helpstring(
+      "IMagpieObjectCreator interface. Implemented by script site, used for creating JS objects."
+    ),
+	  object,
+	  uuid(04E73040-64B5-4624-BA53-F0663137D32B),
+	  oleautomation,
+	  pointer_default(unique)
+  ]
+  interface IMagpieObjectCreator : IUnknown
+  {
+    HRESULT createObject([in] BSTR aObjectName, [out, retval] LPDISPATCH * aRetObject);
+  };
+
+/*==========================================================================*/
+  [
+	  helpstring(
+      "IMagpieConsole interface. The magpie console implements this interface."
+    ),
+	  object,
+	  uuid(5FCD00DD-F021-496a-9FD1-24B7195FF5D9),
+	  dual,
+	  nonextensible,
+	  pointer_default(unique)
+  ]
+  interface IMagpieConsole : IDispatch
+  {
+    [id(1), helpstring(
+      "Method log"
+    ), vararg]
+    HRESULT log([in] SAFEARRAY(VARIANT) pVals);
+
+    [id(2), helpstring(
+      "Method debug"
+    ), vararg]
+    HRESULT debug([in] SAFEARRAY(VARIANT) pVals);
+
+    [id(3), helpstring(
+      "Method info"
+    ), vararg]
+    HRESULT info([in] SAFEARRAY(VARIANT) pVals);
+
+    [id(4), helpstring(
+      "Method warn"
+    ), vararg]
+    HRESULT warn([in] SAFEARRAY(VARIANT) pVals);
+
+    [id(5), helpstring(
+      "Method error"
+    ), vararg]
+    HRESULT error([in] SAFEARRAY(VARIANT) pVals);
+  };
+
+  /*==========================================================================*/
+  [
+	  helpstring(
+    "IMagpieModuleRestricted Interface. Additional methods to IMagpieModule"
+    "that can't be called from script."
+    ),
+	  object,
+	  uuid(77CA8F88-66B2-4bdf-873F-8C33BD814EF5),
+	  pointer_default(unique)
+  ]
+  interface IMagpieModuleRestricted : IUnknown
+  {
+    [helpstring(
+      "TODO."
+    )]
+    HRESULT GetExportsObject([out, retval] LPDISPATCH * ppRet);
+  };
+
+/*==========================================================================*/
+  [
+    helpstring(
+      "IMagpieModule interface. Each module implements this interface. "
+      "Gets injected into the module's js."
+    ),
+    object,
+    uuid(CE0BBC10-B7B6-476f-A799-A59A4105C3BC),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+  ]
+  interface IMagpieModule : IDispatch
+  {
+    [propget, id(1), helpstring(
+      "Property id. The module's absolute ID."
+    )]
+    HRESULT id([out, retval] VARIANT* pVal);
+// modules do not have to have the 'exports' property, although some
+// implementations have this - and some modules expect this property
+// to be present (underscore.js). See also MagpieModuleExports.h.
+#ifdef MODULES_HAVE_EXPORT_PROPERTY
+    [propget, id(2), helpstring(
+      "Property exports. The module's exported API."
+    )]
+    HRESULT exports([out, retval] VARIANT* pVal);
+
+    [propput, id(2), helpstring(
+      "Property exports. The module's exported API."
+    )]
+    HRESULT exports([in] LPDISPATCH pVal);
+#endif // def MODULES_HAVE_EXPORT_PROPERTY
+  };
+
+/*==========================================================================*/
+  [
+    helpstring(
+      "IMagpieRequire interface. Gets injected into a module's js as 'require'."
+    ),
+    object,
+    uuid(82440242-4B02-4690-B2A0-171CA206136A),
+    dual,
+    nonextensible,
+    pointer_default(unique)
+  ]
+  interface IMagpieRequire : IDispatch
+  {
+    [id(0), helpstring(
+      "Default method. This method is called when you write require(<some-module-ID>)."
+    )]
+    HRESULT require([in] BSTR moduleID, [out, retval] VARIANT* pvtExports);
+
+    [propget, id(2), helpstring(
+      "Property main. Represents the top-level 'module' object of the program. "
+      "Referentially identical to the 'module' object of the main program."
+    )]
+    HRESULT main([out, retval] VARIANT* pVal);
+  };
+
+  /*==========================================================================*/
+  [
+	  helpstring(
+    "IMagpieScriptLoader Interface. Implement this interface to supply a source"
+    "for scripts to magpie. Magpie will call this interface to get the script"
+    "source for a module, means, when require(..) is called."
+    ),
+	  object,
+	  uuid(25CDB11F-CA03-4f28-99CC-88CCF694A507),
+	  pointer_default(unique)
+  ]
+  interface IMagpieScriptLoader : IUnknown
+  {
+    [helpstring(
+      "HasModuleScript. Check if script loader has a script for this ID."
+      " Return S_OK if yes, something else if not. S_FALSE is acceptable."
+    )]
+    HRESULT HasModuleScript([in, string] const OLECHAR* lpszModuleID);
+
+    [helpstring(
+      "GetModuleScript. Called to get the script source for lpszModuleID."
+    )]
+    HRESULT GetModuleScript([in, string] const OLECHAR* lpszModuleID, [out, retval] BSTR * pbsScript);
+
+    [helpstring(
+      "GetModuleScriptDecorated. Called to get the script source for lpszModuleID with some decoration."
+    )]
+    HRESULT GetModuleScriptDecorated(
+          [in, string] const OLECHAR* lpszModuleID,
+          [in, string] const OLECHAR* lpszScriptIntro,
+          [in, string] const OLECHAR* lpszScriptExtro,
+          [out, retval] BSTR * pbsScript);
+  };
+
+  /*==========================================================================*/
+  [
+	  helpstring(
+    "IMagpieScriptLoader2 Interface. Support this interface to expose extra"
+    " information like a filename or some identifier."
+    ),
+	  object,
+	  uuid(EC310E49-EF0C-4c91-8B27-FEA254803009),
+	  pointer_default(unique)
+  ]
+  interface IMagpieScriptLoader2 : IUnknown
+  {
+    [helpstring(
+      "GetProperty. Called to get a property like filename etc."
+    )]
+    HRESULT GetProperty([in, string] const OLECHAR* lpszModuleID,
+      [in, string] const OLECHAR* lpszPropID, [out, retval] BSTR * pbsRet);
+  };
+
+/*==========================================================================*/
+	[
+		helpstring(
+      "MagpieApplication Class. "
+      "The only object that can be intantiated directly. "
+      "A Magpie application hold a reference to this."
+    ),
+		uuid(0C9C9632-F0F9-40c2-8AA5-E49112C741A6)
+	]
+	coclass MagpieApplication
+	{
+		[default] interface IMagpieApplication;
+	};
+};

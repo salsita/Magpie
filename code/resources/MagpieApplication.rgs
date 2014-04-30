@@ -1,0 +1,26 @@
+HKCR
+{
+	Magpie.MagpieApplication.1 = s 'MagpieApplication Class'
+	{
+		CLSID = s '{0C9C9632-F0F9-40c2-8AA5-E49112C741A6}'
+	}
+	Magpie.MagpieApplication = s 'MagpieApplication Class'
+	{
+		CLSID = s '{0C9C9632-F0F9-40c2-8AA5-E49112C741A6}'
+		CurVer = s 'Magpie.MagpieApplication.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {0C9C9632-F0F9-40c2-8AA5-E49112C741A6} = s 'MagpieApplication Class'
+		{
+			ProgID = s 'Magpie.MagpieApplication.1'
+			VersionIndependentProgID = s 'Magpie.MagpieApplication'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{927FEA3E-303E-44d3-965F-95360C16BA45}'
+		}
+	}
+}

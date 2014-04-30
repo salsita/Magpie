@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <WTL_Includes>C:\Program Files\WTL\Include</WTL_Includes>
+    <GTest_Includes>$(VisualStudioDir)\Projects\gtest\include</GTest_Includes>
+    <GTest_Lib>$(VisualStudioDir)\Projects\gtest\lib\$(Configuration)_$(PlatformName)</GTest_Lib>
+    <GMock_Includes>$(VisualStudioDir)\Projects\gtest\include</GMock_Includes>
+    <GMock_Lib>$(GTest_Lib)</GMock_Lib>
+    <BHOHelper_Includes>$(SolutionDir)..\libbhohelper\code\include</BHOHelper_Includes>
+    <BHOHelper_Lib>$(SolutionDir)..\libbhohelper\deploy\$(Configuration)_$(PlatformName)</BHOHelper_Lib>
+    <DeployFolder>$(SolutionDir)deploy</DeployFolder>
+    <BuildFolder>$(SolutionDir)build</BuildFolder>
+    <GeneratedFilesFolder>$(BuildFolder)\$(Configuration)_$(PlatformName)\src</GeneratedFilesFolder>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(DeployFolder)\$(Configuration)_$(PlatformName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir>$(BuildFolder)\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
+    <IncludePath>$(WTL_Includes);$(GTest_Includes);$(GMock_Includes);$(BHOHelper_Includes);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalLibraryDirectories>$(GTest_Lib);$(GMock_Lib);$(BHOHelper_Lib);$(OutDir)</AdditionalLibraryDirectories>
+    </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>_VARIADIC_MAX=10;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\src;$(ProjectDir)\src\lib;$(GeneratedFilesFolder)\</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <HeaderFileName>$(GeneratedFilesFolder)\%(Filename)_i.h</HeaderFileName>
+      <DllDataFileName>$(GeneratedFilesFolder)\dlldata.c</DllDataFileName>
+      <InterfaceIdentifierFileName>$(GeneratedFilesFolder)\%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>$(GeneratedFilesFolder)\%(Filename)_p.c</ProxyFileName>
+      <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="WTL_Includes">
+      <Value>$(WTL_Includes)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GTest_Includes">
+      <Value>$(GTest_Includes)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GTest_Lib">
+      <Value>$(GTest_Lib)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GMock_Includes">
+      <Value>$(GMock_Includes)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GMock_Lib">
+      <Value>$(GMock_Lib)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BHOHelper_Includes">
+      <Value>$(BHOHelper_Includes)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BHOHelper_Lib">
+      <Value>$(BHOHelper_Lib)</Value>
+    </BuildMacro>
+    <BuildMacro Include="DeployFolder">
+      <Value>$(DeployFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BuildFolder">
+      <Value>$(BuildFolder)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GeneratedFilesFolder">
+      <Value>$(GeneratedFilesFolder)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
