@@ -149,7 +149,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)\..\Magpie_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -170,7 +170,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)\..\Magpie_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -191,7 +191,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)\..\Magpie_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -214,7 +214,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)\..\Magpie_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -239,7 +239,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)\..\Magpie_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -262,7 +262,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)\..\Magpie_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\src\dll;$(GeneratedFilesFolder)..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -283,7 +283,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\dll\dllmain.cpp" />
-    <ClCompile Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.c">
+    <ClCompile Include="$(GeneratedFilesFolder)..\Magpie_lib\Magpie_i.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -305,7 +305,7 @@
     <ClInclude Include="resources\resource.h" />
     <ClInclude Include="src\dll\dllmain.h" />
     <ClInclude Include="src\dll\Resource.h" />
-    <ClInclude Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.h" />
+    <ClInclude Include="$(GeneratedFilesFolder)..\Magpie_lib\Magpie_i.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\Magpie.rc" />

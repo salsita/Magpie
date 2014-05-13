@@ -24,7 +24,7 @@
     <ClCompile Include="src\dll\dllmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.c">
+    <ClCompile Include="$(GeneratedFilesFolder)..\Magpie_lib\Magpie_i.c">
       <Filter>generated</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="src\dll\dllmain.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.h">
+    <ClInclude Include="$(GeneratedFilesFolder)..\Magpie_lib\Magpie_i.h">
       <Filter>generated</Filter>
     </ClInclude>
     <ClInclude Include="resources\resource.h" />
