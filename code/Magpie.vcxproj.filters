@@ -29,9 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\targetver.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="src\dll\Resource.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -40,9 +37,6 @@
     </ClInclude>
     <ClInclude Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.h">
       <Filter>generated</Filter>
-    </ClInclude>
-    <ClInclude Include="src\dll\stdafx.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="resources\resource.h" />
   </ItemGroup>

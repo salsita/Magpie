@@ -306,8 +306,6 @@
     <ClInclude Include="src\dll\dllmain.h" />
     <ClInclude Include="src\dll\Resource.h" />
     <ClInclude Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.h" />
-    <ClInclude Include="include\targetver.h" />
-    <ClInclude Include="src\dll\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\Magpie.rc" />
