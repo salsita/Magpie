@@ -24,25 +24,19 @@
     <ClCompile Include="src\dll\dllmain.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.c">
+    <ClCompile Include="$(GeneratedFilesFolder)..\Magpie_lib\Magpie_i.c">
       <Filter>generated</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\targetver.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="src\dll\Resource.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\dll\dllmain.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="$(GeneratedFilesFolder)\..\Magpie_lib\Magpie_i.h">
+    <ClInclude Include="$(GeneratedFilesFolder)..\Magpie_lib\Magpie_i.h">
       <Filter>generated</Filter>
-    </ClInclude>
-    <ClInclude Include="src\dll\stdafx.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="resources\resource.h" />
   </ItemGroup>
