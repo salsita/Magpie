@@ -11,14 +11,14 @@
     <BHOHelper_Lib>$(SolutionDir)..\libbhohelper\deploy\$(Configuration)_$(PlatformName)</BHOHelper_Lib>
     <DeployFolder>$(SolutionDir)deploy</DeployFolder>
     <BuildFolder>$(SolutionDir)build</BuildFolder>
-    <GeneratedFilesFolder>$(BuildFolder)\$(Configuration)_$(PlatformName)\src</GeneratedFilesFolder>
+    <GeneratedFilesFolder>$(BuildFolder)\$(Configuration)_$(PlatformName)\src\$(ProjectName)\</GeneratedFilesFolder>
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(DeployFolder)\$(Configuration)_$(PlatformName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup>
     <IntDir>$(BuildFolder)\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
-    <IncludePath>$(WTL_Includes);$(GTest_Includes);$(GMock_Includes);$(BHOHelper_Includes);$(IncludePath)</IncludePath>
+    <IncludePath>$(WTL_Includes);$(GTest_Includes);$(GMock_Includes);$(BHOHelper_Includes);$(SolutionDir)code\targetspecs;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
@@ -26,13 +26,13 @@
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>_VARIADIC_MAX=10;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\src;$(ProjectDir)\src\lib;$(GeneratedFilesFolder)\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\src;$(ProjectDir)\src\lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
-      <HeaderFileName>$(GeneratedFilesFolder)\%(Filename)_i.h</HeaderFileName>
-      <DllDataFileName>$(GeneratedFilesFolder)\dlldata.c</DllDataFileName>
-      <InterfaceIdentifierFileName>$(GeneratedFilesFolder)\%(Filename)_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>$(GeneratedFilesFolder)\%(Filename)_p.c</ProxyFileName>
+      <HeaderFileName>$(GeneratedFilesFolder)%(Filename)_i.h</HeaderFileName>
+      <DllDataFileName>$(GeneratedFilesFolder)dlldata.c</DllDataFileName>
+      <InterfaceIdentifierFileName>$(GeneratedFilesFolder)%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>$(GeneratedFilesFolder)%(Filename)_p.c</ProxyFileName>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
     </Midl>
   </ItemDefinitionGroup>
