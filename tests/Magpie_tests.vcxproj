@@ -139,7 +139,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -160,7 +160,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -183,7 +183,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
@@ -209,7 +209,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
@@ -235,7 +235,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
@@ -261,7 +261,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\code\include;..\code\src;$(GeneratedFilesFolder)\..\Magpie_lib;$(GeneratedFilesFolder);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
