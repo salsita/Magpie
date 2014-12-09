@@ -13,6 +13,17 @@
 LPCOLESTR gJscript9ModuleWrapperIntro = L"(function(require,module,exports){";
 LPCOLESTR gJscript9ModuleWrapperExtro = L"\nreturn exports;})";
 
+#ifdef LOG_CMagpieApplication
+#define CMagpieApplication_TRACE(...) \
+  ATLTRACE(__FUNCTION__); \
+  ATLTRACE(_T(": ")); \
+  ATLTRACE(__VA_ARGS__); \
+  ATLTRACE(_T("\n"));
+#else
+#define CMagpieApplication_TRACE(...)
+#endif
+
+
 /*============================================================================
  * class CMagpieApplication
  */
@@ -221,7 +232,7 @@ HRESULT CMagpieApplication::RunModule(
   LPCOLESTR                   lpszModuleID,
   CMagpieModuleComObject  **  ppRet)
 {
-  ATLTRACE(_T("CMagpieApplication::RunModule %s\n"), lpszModuleID);
+  CMagpieApplication_TRACE(_T("%s"), lpszModuleID);
   // load the module
   CComPtr<CMagpieModuleComObject> module;
   IF_FAILED_RET(LoadModule(pSrcModule, lpszModuleID, NULL, 9 == m_ScriptEngine.mJscriptVersion, module.p));

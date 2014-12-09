@@ -14,6 +14,18 @@
 extern CLSID CLSID_JScript;
 extern CLSID CLSID_JScript9;
 
+#ifdef LOG_ActiveScriptT
+#define ActiveScriptT_TRACE(...) \
+  ATLTRACE(__FUNCTION__); \
+  ATLTRACE(_T(": ")); \
+  ATLTRACE(__VA_ARGS__); \
+  ATLTRACE(_T("\n"));
+#else
+#define ActiveScriptT_TRACE(...)
+#endif
+
+
+
 /*============================================================================
  * template CActiveScriptT
  * Implements IActiveScriptSite.
@@ -214,7 +226,7 @@ public:
 
 	STDMETHOD(OnStateChange)(SCRIPTSTATE ssScriptState)
   {
-    ATLTRACE(_T("SCRIPT OnStateChange: %i\n"), ssScriptState);
+    ActiveScriptT_TRACE(_T("%i"), ssScriptState);
     return S_OK;
   }
 
